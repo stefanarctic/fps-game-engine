@@ -1,6 +1,7 @@
 #include "Forge/Renderer/SceneRenderer.h"
 #include "Forge/Assets/AssetManager.h"
 #include "Forge/Core/Log.h"
+#include "Forge/Core/Settings.h"
 
 #include <glad/gl.h>
 
@@ -37,6 +38,16 @@ glm::vec3 cameraForward(const glm::mat4& view) {
     return glm::normalize(-glm::vec3(inv[2]));
 }
 } // namespace
+
+RenderOptions RenderOptions::fromSettings() {
+    const GameSettings& s = Settings::get();
+    RenderOptions o;
+    o.shadows = s.shadows;
+    o.ambientOcclusion = s.ambientOcclusion;
+    o.bloom = s.bloom;
+    o.antiAliasing = s.antiAliasing;
+    return o;
+}
 
 CameraData CameraData::fromEntity(Scene& scene, Entity e, float aspect) {
     CameraData d;
@@ -161,7 +172,7 @@ void SceneRenderer::render(Scene& scene, const CameraData& camera, int width, in
     shadowPass(scene, camera);
 
     const Environment& env = scene.environment;
-    bool needPrepass = env.ssao || options.debugView == DebugView::AmbientOcclusion;
+    bool needPrepass = (env.ssao && options.ambientOcclusion) || options.debugView == DebugView::AmbientOcclusion;
     m_SSAOValid = false;
     if (needPrepass) {
         prepass(camera, options);
@@ -182,7 +193,6 @@ void SceneRenderer::render(Scene& scene, const CameraData& camera, int width, in
 }
 
 void SceneRenderer::collect(Scene& scene, const CameraData& camera, const RenderOptions& options) {
-    (void)options;
     m_Items.clear();
     m_Lights.clear();
     m_HasSun = false;
@@ -224,7 +234,7 @@ void SceneRenderer::collect(Scene& scene, const CameraData& camera, const Render
                 m_HasSun = true;
                 m_SunDirection = dir;
                 m_SunColor = toLinear(l.color) * l.intensity;
-                m_SunShadows = l.castShadows;
+                m_SunShadows = l.castShadows && options.shadows;
             }
             return;
         }
@@ -551,10 +561,11 @@ void SceneRenderer::drawLines(const LineBatch& batch, const CameraData& camera, 
 }
 
 void SceneRenderer::drawParticles(Scene& scene, const CameraData& camera) {
-    std::vector<float> data;
+    std::vector<float> batches[2]; // [0] alpha blended (smoke, debris), [1] additive (fire, sparks)
     glm::vec3 right(camera.view[0][0], camera.view[1][0], camera.view[2][0]);
     glm::vec3 up(camera.view[0][1], camera.view[1][1], camera.view[2][1]);
     scene.each<ParticleEmitter>([&](Entity, ParticleEmitter& em) {
+        std::vector<float>& data = batches[em.blend == ParticleBlend::Additive ? 1 : 0];
         for (const Particle& p : em.particles) {
             float t = glm::clamp(p.age / std::max(p.lifetime, 1e-4f), 0.0f, 1.0f);
             glm::vec4 c = glm::mix(em.startColor, em.endColor, t);
@@ -571,22 +582,28 @@ void SceneRenderer::drawParticles(Scene& scene, const CameraData& camera) {
             m_Stats.particles++;
         }
     });
-    if (data.empty()) return;
+    if (batches[0].empty() && batches[1].empty()) return;
     Shader* s = useShader("Particles");
     if (!s) return;
     s->setMat4("u_ViewProj", camera.projection * camera.view);
     glBindVertexArray(m_ParticleVao);
     glBindBuffer(GL_ARRAY_BUFFER, m_ParticleVbo);
-    glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(data.size() * sizeof(float)), data.data(), GL_STREAM_DRAW);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE); // additive
-    glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(data.size() / 9));
+    for (int i = 0; i < 2; ++i) {
+        const std::vector<float>& data = batches[i];
+        if (data.empty()) continue;
+        if (i == 0) glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        else glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(data.size() * sizeof(float)), data.data(), GL_STREAM_DRAW);
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(data.size() / 9));
+        m_Stats.drawCalls++;
+    }
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
-    m_Stats.drawCalls++;
 }
 
 void SceneRenderer::postProcess(Scene& scene, const RenderOptions& options) {
@@ -599,7 +616,7 @@ void SceneRenderer::postProcess(Scene& scene, const RenderOptions& options) {
     // Debug views (AO / normals / albedo) bypass tone mapping so values read correctly.
     bool passthrough = options.debugView == DebugView::AmbientOcclusion || options.debugView == DebugView::Normals ||
                        options.debugView == DebugView::Albedo;
-    bool bloom = env.bloom && env.bloomIntensity > 0.0f && !passthrough;
+    bool bloom = env.bloom && options.bloom && env.bloomIntensity > 0.0f && !passthrough;
     if (bloom) {
         Shader* pre = useShader("BloomPrefilter");
         Shader* blur = AssetManager::getShader("Blur").get();
@@ -653,7 +670,7 @@ void SceneRenderer::postProcess(Scene& scene, const RenderOptions& options) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_LdrFB->colorTexture());
         fxaa->setInt("u_Input", 0);
-        fxaa->setInt("u_Enabled", env.fxaa ? 1 : 0);
+        fxaa->setInt("u_Enabled", env.fxaa && options.antiAliasing ? 1 : 0);
         fxaa->setVec2("u_TexelSize", glm::vec2(1.0f / m_Width, 1.0f / m_Height));
         drawFullscreen();
     }

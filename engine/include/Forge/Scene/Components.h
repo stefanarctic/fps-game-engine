@@ -116,8 +116,11 @@ struct Particle {
     float lifetime = 1.0f;
 };
 
+enum class ParticleBlend : int { Additive = 0, Alpha = 1 };
+
 struct ParticleEmitter {
     bool emitting = true;
+    ParticleBlend blend = ParticleBlend::Additive; // additive for fire/sparks, alpha for smoke/debris
     bool loop = true;
     float rate = 20.0f;            // particles per second
     int burst = 0;                 // particles emitted once when the emitter starts

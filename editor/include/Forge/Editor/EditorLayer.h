@@ -16,6 +16,7 @@
 #include "Forge/Editor/EditorCamera.h"
 #include "Forge/Editor/PropertyDrawer.h"
 #include "Forge/Renderer/SceneRenderer.h"
+#include "Forge/UI/PauseMenu.h"
 
 namespace Forge::Editor {
 
@@ -127,6 +128,8 @@ private:
     bool m_SceneHovered = false;
     bool m_CameraBusy = false;
     bool m_GameCaptured = false;
+    PauseMenu m_PauseMenu;           // in-game pause menu (Esc in the Game view); freezes the simulation
+    void captureGameMouse(bool capture);
     bool m_FocusGameTab = false;
     bool m_FocusSceneTab = false;
 

@@ -17,6 +17,7 @@ void FPSGame::setupScene(Scene& scene) {
     scene.addSystem<WeaponSystem>();
     scene.addSystem<EnemySystem>();
     scene.addSystem<ProjectileSystem>();
+    scene.addSystem<ExplosiveSystem>();
     scene.addSystem<PickupSystem>();
     scene.addSystem<SpinnerSystem>();
 }
@@ -37,6 +38,7 @@ void FPSGame::onEditorMenu(Scene& scene) {
     }
     if (ImGui::MenuItem("Spawn Drone", nullptr, false, !editing)) Prefabs::drone(scene, glm::vec3(0, 3, 0));
     if (ImGui::MenuItem("Restart Game", nullptr, false, !editing)) GameManagerSystem::restart(scene);
+    if (ImGui::MenuItem("Reset Explosive Barrels", nullptr, false, !editing)) ExplosiveSystem::reset(scene);
     ImGui::EndMenu();
 }
 

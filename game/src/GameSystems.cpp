@@ -1,7 +1,10 @@
 #include "GameSystems.h"
+#include "Combat.h"
 #include "Prefabs.h"
 
+#include <algorithm>
 #include <cmath>
+#include <cstdio>
 
 namespace FPS {
 
@@ -21,6 +24,19 @@ GameManager* findGameManager(Scene& scene) {
         if (!gm) gm = &g;
     });
     return gm;
+}
+
+std::vector<Entity> weaponInventory(Scene& scene, const Player& player) {
+    std::vector<Entity> out;
+    if (!scene.valid(player.camera)) return out;
+    for (Entity c : scene.get<Transform>(player.camera).children)
+        if (scene.valid(c) && scene.has<Weapon>(c)) out.push_back(c);
+    std::stable_sort(out.begin(), out.end(), [&](Entity a, Entity b) { return scene.get<Weapon>(a).slot < scene.get<Weapon>(b).slot; });
+    return out;
+}
+
+Weapon* equippedWeapon(Scene& scene, const Player& player) {
+    return scene.valid(player.weapon) ? scene.tryGet<Weapon>(player.weapon) : nullptr;
 }
 
 // ---------------------------------------------------------------------------
@@ -56,6 +72,7 @@ void GameManagerSystem::restart(Scene& scene) {
         p.pitch = 0.0f;
         p.recoil = 0.0f;
         p.damageFlash = 0.0f;
+        p.shake = 0.0f;
         t.position = p.spawnPosition;
         if (Health* hp = scene.tryGet<Health>(pe)) hp->current = hp->max;
         if (CharacterController* cc = scene.tryGet<CharacterController>(pe)) cc->velocity = glm::vec3(0.0f);
@@ -63,18 +80,19 @@ void GameManagerSystem::restart(Scene& scene) {
             scene.get<Transform>(p.camera).position = glm::vec3(0.0f, p.eyeHeight, 0.0f);
             scene.get<Transform>(p.camera).rotation = glm::vec3(0.0f);
         }
-        if (scene.valid(p.weapon)) {
-            if (Weapon* w = scene.tryGet<Weapon>(p.weapon)) {
-                w->ammo = w->magazineSize;
-                w->reserveAmmo = std::max(w->reserveAmmo, w->magazineSize * 4);
-                w->reloading = false;
-            }
+        for (Entity we : weaponInventory(scene, p)) {
+            Weapon& w = scene.get<Weapon>(we);
+            w.ammo = w.magazineSize;
+            if (w.initialReserve >= 0) w.reserveAmmo = w.initialReserve;
+            w.reloading = false;
+            w.aim = 0.0f;
         }
     }
     scene.each<Pickup, EntityInfo>([](Entity, Pickup& pk, EntityInfo& info) {
         pk.available = true;
         info.active = true;
     });
+    ExplosiveSystem::reset(scene);
     if (GameManager* gm = findGameManager(scene)) {
         gm->wave = 0;
         gm->score = 0;
@@ -153,21 +171,32 @@ void PlayerSystem::onStart(Scene& scene) {
 
 void PlayerSystem::onUpdate(Scene& scene, float dt) {
     PhysicsWorld& physics = scene.physics();
+    const GameSettings& settings = Settings::get();
     scene.each<Player, CharacterController, Transform>([&](Entity e, Player& p, CharacterController& cc, Transform& t) {
         Health* hp = scene.tryGet<Health>(e);
         if (hp && hp->current <= 0.0f) p.dead = true;
         p.damageFlash = std::max(0.0f, p.damageFlash - dt * 1.5f);
+        p.shake = std::max(0.0f, p.shake - dt * 1.6f);
+        p.switchBanner = std::max(0.0f, p.switchBanner - dt);
 
-        // Mouse look
+        Weapon* weapon = equippedWeapon(scene, p);
+        float aim = weapon ? weapon->aim : 0.0f;
+
+        // Mouse look. Sensitivity follows the zoom so aiming feels consistent.
         if (!p.dead) {
+            float zoom = 1.0f;
+            if (scene.valid(p.camera))
+                if (const Camera* cam = scene.tryGet<Camera>(p.camera))
+                    zoom = std::tan(glm::radians(cam->fieldOfView) * 0.5f) / std::tan(glm::radians(settings.fieldOfView) * 0.5f);
+            float sensitivity = p.mouseSensitivity * settings.mouseSensitivity * glm::clamp(zoom, 0.05f, 1.0f);
             glm::vec2 md = Input::mouseDelta();
-            p.yaw -= md.x * p.mouseSensitivity;
-            p.pitch = glm::clamp(p.pitch - md.y * p.mouseSensitivity, -88.0f, 88.0f);
+            p.yaw -= md.x * sensitivity;
+            p.pitch = glm::clamp(p.pitch - md.y * sensitivity * (settings.invertY ? -1.0f : 1.0f), -88.0f, 88.0f);
         }
         p.recoil = Math::lerp(p.recoil, 0.0f, Math::damp(7.0f, dt));
         t.rotation = glm::vec3(0.0f, p.yaw, 0.0f);
 
-        // Walk / sprint
+        // Walk / sprint (no sprinting while aiming or shooting)
         float yawRad = glm::radians(p.yaw);
         glm::vec3 forward(-std::sin(yawRad), 0.0f, -std::cos(yawRad));
         glm::vec3 right(std::cos(yawRad), 0.0f, -std::sin(yawRad));
@@ -179,8 +208,9 @@ void PlayerSystem::onUpdate(Scene& scene, float dt) {
             if (Input::getKey(Key::A)) wish -= right;
         }
         if (glm::dot(wish, wish) > 0.0f) wish = glm::normalize(wish);
-        bool sprint = Input::getKey(Key::LeftShift) && glm::dot(wish, forward) > 0.5f;
-        glm::vec3 target = wish * p.moveSpeed * (sprint ? p.sprintMultiplier : 1.0f);
+        p.sprinting = Input::getKey(Key::LeftShift) && glm::dot(wish, forward) > 0.5f && aim < 0.3f && !Input::getMouseButton(Mouse::Left);
+        float speed = p.moveSpeed * (p.sprinting ? p.sprintMultiplier : 1.0f) * Math::lerp(1.0f, p.aimMoveMultiplier, aim);
+        glm::vec3 target = wish * speed;
         float accel = cc.grounded ? 14.0f : 3.0f;
         float k = Math::damp(accel, dt);
         cc.velocity.x = Math::lerp(cc.velocity.x, target.x, k);
@@ -207,10 +237,10 @@ void PlayerSystem::onUpdate(Scene& scene, float dt) {
             cc.velocity = glm::vec3(0.0f);
         }
 
-        // Head bob
+        // Head bob (much smaller while aiming)
         float horizontal = glm::length(glm::vec2(cc.velocity.x, cc.velocity.z));
         float targetBob = (cc.grounded && horizontal > 0.5f) ? std::min(horizontal / p.moveSpeed, 1.6f) : 0.0f;
-        p.bobAmount = Math::lerp(p.bobAmount, targetBob, Math::damp(10.0f, dt));
+        p.bobAmount = Math::lerp(p.bobAmount, targetBob * (1.0f - 0.8f * aim), Math::damp(10.0f, dt));
         p.bobPhase += dt * (5.0f + horizontal * 0.9f);
 
         if (scene.valid(p.camera)) {
@@ -224,26 +254,100 @@ void PlayerSystem::onUpdate(Scene& scene, float dt) {
                 float bobY = std::sin(p.bobPhase * 2.0f) * 0.035f * p.bobAmount;
                 float bobX = std::cos(p.bobPhase) * 0.025f * p.bobAmount;
                 ct.position = glm::vec3(bobX, p.eyeHeight + bobY, 0.0f);
-                ct.rotation = glm::vec3(p.pitch + p.recoil, 0.0f, 0.0f);
+                glm::vec3 shake(0.0f);
+                if (p.shake > 0.0f) {
+                    float s = p.shake * p.shake * 3.0f;
+                    shake = glm::vec3(Random::range(-s, s), Random::range(-s, s), Random::range(-s, s) * 0.5f);
+                }
+                ct.rotation = glm::vec3(p.pitch + p.recoil, 0.0f, 0.0f) + shake;
             }
         }
     });
 }
 
 // ---------------------------------------------------------------------------
-// Weapon
+// Weapons
 // ---------------------------------------------------------------------------
+namespace {
+// Random direction inside a cone of `degrees` around `forward`.
+glm::vec3 coneDirection(const glm::vec3& forward, const glm::vec3& right, const glm::vec3& up, float degrees) {
+    float a = glm::radians(degrees) * std::sqrt(Random::value());
+    float theta = Random::range(0.0f, 2.0f * Math::PI);
+    return glm::normalize(forward + (right * std::cos(theta) + up * std::sin(theta)) * std::tan(a));
+}
+
+float smooth(float t) { return t * t * (3.0f - 2.0f * t); }
+} // namespace
+
+void WeaponSystem::onStart(Scene& scene) {
+    scene.each<Player>([&](Entity, Player& p) {
+        std::vector<Entity> inventory = weaponInventory(scene, p);
+        if (inventory.empty()) return;
+        if (!scene.valid(p.weapon) || !scene.has<Weapon>(p.weapon)) p.weapon = inventory.front();
+        for (Entity we : inventory) {
+            Weapon& w = scene.get<Weapon>(we);
+            w.initialReserve = w.reserveAmmo;
+            w.aim = 0.0f;
+            w.equipTimer = 0.0f;
+            scene.get<EntityInfo>(we).active = we == p.weapon;
+        }
+        p.previousWeapon = NullEntity;
+    });
+}
+
+void WeaponSystem::equip(Scene& scene, Player& p, Entity weapon) {
+    if (weapon == p.weapon || !scene.valid(weapon) || !scene.has<Weapon>(weapon)) return;
+    if (Weapon* old = equippedWeapon(scene, p)) {
+        old->reloading = false;
+        old->aim = 0.0f;
+        scene.get<EntityInfo>(p.weapon).active = false;
+    }
+    p.previousWeapon = p.weapon;
+    p.weapon = weapon;
+    p.aimToggled = false;
+    p.switchBanner = 1.6f;
+    Weapon& w = scene.get<Weapon>(weapon);
+    w.equipTimer = w.equipTime;
+    w.aim = 0.0f;
+    w.queuedShot = 0.0f;
+    scene.get<EntityInfo>(weapon).active = true;
+}
+
 void WeaponSystem::onUpdate(Scene& scene, float dt) {
     PhysicsWorld& physics = scene.physics();
-    GameManager* gm = findGameManager(scene);
+    const GameSettings& settings = Settings::get();
 
     scene.each<Player>([&](Entity playerEntity, Player& p) {
-        if (!scene.valid(p.weapon) || !scene.has<Weapon>(p.weapon)) return;
+        std::vector<Entity> inventory = weaponInventory(scene, p);
+        if (inventory.empty()) return;
+        if (!scene.valid(p.weapon) || !scene.has<Weapon>(p.weapon)) p.weapon = inventory.front();
+
+        // --- Switching: number keys, mouse wheel, Q for the previous weapon -----
+        if (!p.dead) {
+            Entity want = NullEntity;
+            for (int i = 0; i < 9; ++i) {
+                if (!Input::getKeyDown(Key::D1 + i)) continue;
+                for (Entity we : inventory)
+                    if (scene.get<Weapon>(we).slot == i + 1) want = we;
+            }
+            float scroll = Input::scrollDelta();
+            if (scroll != 0.0f && inventory.size() > 1) {
+                int index = (int)(std::find(inventory.begin(), inventory.end(), p.weapon) - inventory.begin());
+                int n = (int)inventory.size();
+                index = (index + (scroll < 0.0f ? 1 : n - 1)) % n;
+                want = inventory[(size_t)index];
+            }
+            if (Input::getKeyDown(Key::Q) && scene.valid(p.previousWeapon)) want = p.previousWeapon;
+            if (want != NullEntity) equip(scene, p, want);
+        }
+
         Weapon& w = scene.get<Weapon>(p.weapon);
         Transform& wt = scene.get<Transform>(p.weapon);
 
         w.cooldown -= dt;
         w.flashTimer -= dt;
+        w.queuedShot -= dt;
+        w.equipTimer = std::max(0.0f, w.equipTimer - dt);
         w.kick = std::max(0.0f, w.kick - dt * 7.0f);
         w.bloom = std::max(0.0f, w.bloom - dt * 4.0f);
 
@@ -262,75 +366,119 @@ void WeaponSystem::onUpdate(Scene& scene, float dt) {
                 w.reloading = false;
             }
         }
+        bool ready = !p.dead && !w.reloading && w.equipTimer <= 0.0f;
+        if (ready && Input::getKeyDown(Key::R)) startReload();
 
-        if (!p.dead && !w.reloading && Input::getKeyDown(Key::R)) startReload();
+        // --- Aiming down sights ------------------------------------------------
+        bool aimInput;
+        if (settings.holdToAim) {
+            aimInput = Input::getMouseButton(Mouse::Right);
+        } else {
+            if (Input::getMouseButtonDown(Mouse::Right)) p.aimToggled = !p.aimToggled;
+            aimInput = p.aimToggled;
+        }
+        bool canAim = ready && !p.sprinting;
+        float aimTarget = aimInput && canAim ? 1.0f : 0.0f;
+        w.aim = Math::lerp(w.aim, aimTarget, Math::damp(w.aimSpeed, dt));
+        if (std::fabs(w.aim - aimTarget) < 0.002f) w.aim = aimTarget;
+        float aim = smooth(w.aim);
+        bool scoped = w.scope && w.aim > 0.92f;
 
-        if (!p.dead && !w.reloading && Input::getMouseButton(Mouse::Left) && w.cooldown <= 0.0f) {
+        // Camera zoom. Scopes snap to their magnification once the overlay is up.
+        if (scene.valid(p.camera))
+            if (Camera* cam = scene.tryGet<Camera>(p.camera)) {
+                float base = settings.fieldOfView;
+                cam->fieldOfView = w.scope ? (scoped ? w.aimFov : Math::lerp(base, base * 0.8f, aim)) : Math::lerp(base, w.aimFov, aim);
+            }
+
+        // --- Firing --------------------------------------------------------------
+        bool trigger;
+        if (w.automatic) {
+            trigger = Input::getMouseButton(Mouse::Left);
+        } else {
+            if (Input::getMouseButtonDown(Mouse::Left)) w.queuedShot = 0.2f;
+            trigger = w.queuedShot > 0.0f;
+        }
+        if (ready && trigger && w.cooldown <= 0.0f && scene.valid(p.camera)) {
+            w.queuedShot = 0.0f;
             if (w.ammo <= 0) {
                 startReload();
-            } else if (scene.valid(p.camera)) {
-                // Fire one round
+            } else {
                 w.ammo--;
                 w.cooldown = std::max(w.cooldown, 0.0f) + 1.0f / std::max(w.fireRate, 0.1f);
                 w.kick = 1.0f;
                 w.flashTimer = 0.05f;
-                p.recoil += w.recoil;
-                p.yaw += Random::range(-0.3f, 0.3f) * w.recoil;
+                float recoil = w.recoil * Math::lerp(1.0f, 0.6f, aim);
+                p.recoil += recoil;
+                p.yaw += Random::range(-0.3f, 0.3f) * recoil;
 
                 const Transform& ct = scene.get<Transform>(p.camera);
                 glm::vec3 origin = ct.worldPosition();
                 glm::vec3 fwd = ct.forward(), right = ct.right(), up = ct.up();
-                float spreadDeg = w.spread + w.bloom;
+                float spreadDeg = (w.spread + w.bloom) * Math::lerp(1.0f, w.aimSpread, aim);
                 w.bloom = std::min(w.bloom + 0.3f, 3.0f);
-                float a = glm::radians(spreadDeg) * std::sqrt(Random::value());
-                float theta = Random::range(0.0f, 2.0f * Math::PI);
-                glm::vec3 dir = glm::normalize(fwd + (right * std::cos(theta) + up * std::sin(theta)) * std::tan(a));
-
                 glm::vec3 muzzle = origin + fwd * 0.6f;
                 if (scene.valid(w.muzzleFlash)) muzzle = scene.get<Transform>(w.muzzleFlash).worldPosition();
+                if (scoped) muzzle = origin - up * 0.08f; // tracer starts under the scope
 
-                RaycastHit hit;
-                glm::vec3 end = origin + dir * w.range;
-                if (physics.raycast(Ray{origin, dir}, w.range, hit, playerEntity)) {
-                    end = hit.point;
-                    glm::vec4 sparks(3.0f, 2.4f, 1.2f, 1.0f);
-                    if (Enemy* enemy = scene.tryGet<Enemy>(hit.entity)) {
-                        if (Health* hp = scene.tryGet<Health>(hit.entity)) hp->current -= w.damage;
-                        enemy->hitFlash = 0.12f;
-                        enemy->velocity += dir * 3.0f;
-                        if (gm) gm->hitMarker = 0.15f;
-                        sparks = glm::vec4(4.0f, 1.2f, 0.4f, 1.0f);
+                if (w.kind == WeaponKind::Launcher) {
+                    // Aim the rocket from the muzzle at whatever the crosshair points at.
+                    glm::vec3 dir = coneDirection(fwd, right, up, spreadDeg);
+                    RaycastHit hit;
+                    glm::vec3 target = origin + dir * w.range;
+                    if (physics.raycast(Ray{origin, dir}, w.range, hit, playerEntity)) target = hit.point;
+                    glm::vec3 shot = glm::distance(target, muzzle) > 1.5f ? glm::normalize(target - muzzle) : dir;
+                    Prefabs::rocket(scene, muzzle, shot * w.projectileSpeed, w.damage, w.explosionRadius, playerEntity);
+                    p.shake = std::min(1.0f, p.shake + 0.25f);
+                } else {
+                    int pellets = std::max(w.pellets, 1);
+                    for (int i = 0; i < pellets; ++i) {
+                        glm::vec3 dir = coneDirection(fwd, right, up, spreadDeg);
+                        RaycastHit hit;
+                        glm::vec3 end = origin + dir * w.range;
+                        if (physics.raycast(Ray{origin, dir}, w.range, hit, playerEntity)) {
+                            end = hit.point;
+                            bool hurt = Combat::applyDamage(scene, hit.entity, w.damage, dir, playerEntity);
+                            if (RigidBody* rb = scene.tryGet<RigidBody>(hit.entity)) {
+                                if (!rb->isKinematic) rb->velocity += dir * w.impactForce / std::max(rb->mass, 0.1f) + glm::vec3(0, 1.0f, 0);
+                            }
+                            glm::vec4 sparks = hurt && scene.has<Enemy>(hit.entity) ? glm::vec4(4.0f, 1.2f, 0.4f, 1.0f) : glm::vec4(3.0f, 2.4f, 1.2f, 1.0f);
+                            Prefabs::impact(scene, hit.point, hit.normal, sparks);
+                        }
+                        // One tracer per shot for pellet weapons keeps the screen readable.
+                        if (i < 3) DebugDraw::line(muzzle, end, glm::vec4(1.0f, 0.85f, 0.5f, pellets > 1 ? 0.45f : 0.7f), 0.04f);
                     }
-                    if (RigidBody* rb = scene.tryGet<RigidBody>(hit.entity)) {
-                        if (!rb->isKinematic) rb->velocity += dir * w.impactForce / std::max(rb->mass, 0.1f) + glm::vec3(0, 1.0f, 0);
-                    }
-                    Prefabs::impact(scene, hit.point, hit.normal, sparks);
                 }
-                DebugDraw::line(muzzle, end, glm::vec4(1.0f, 0.85f, 0.5f, 0.7f), 0.04f);
+                if (w.ammo == 0) w.queuedShot = 0.0f;
             }
         }
 
-        // Viewmodel animation: sway, bob, recoil kick, reload dip.
+        // --- Viewmodel animation: aim blend, sway, bob, recoil, reload and equip dips --
+        w.sprint = Math::lerp(w.sprint, p.sprinting ? 1.0f : 0.0f, Math::damp(8.0f, dt));
+        float steady = 1.0f - 0.85f * aim;
         glm::vec2 md = Input::mouseDelta();
-        glm::vec2 targetSway = glm::clamp(glm::vec2(-md.x, md.y) * 0.0012f, glm::vec2(-0.05f), glm::vec2(0.05f));
+        glm::vec2 targetSway = glm::clamp(glm::vec2(-md.x, md.y) * 0.0012f, glm::vec2(-0.05f), glm::vec2(0.05f)) * steady;
         w.sway = glm::mix(w.sway, targetSway, Math::damp(12.0f, dt));
-        float bobX = std::cos(p.bobPhase) * 0.012f * p.bobAmount;
-        float bobY = std::fabs(std::sin(p.bobPhase)) * 0.014f * p.bobAmount;
+        float bobX = std::cos(p.bobPhase) * 0.012f * p.bobAmount * steady;
+        float bobY = std::fabs(std::sin(p.bobPhase)) * 0.014f * p.bobAmount * steady;
         float r = 0.0f;
-        if (w.reloading) r = std::sin(Math::clamp01(1.0f - w.reloadTimer / w.reloadTime) * Math::PI);
-        wt.position = w.restPosition + glm::vec3(w.sway.x + bobX, w.sway.y - bobY - r * 0.12f, w.kick * 0.07f);
-        wt.rotation = glm::vec3(w.kick * 5.0f - r * 28.0f, w.sway.x * 60.0f, r * 18.0f);
+        if (w.reloading) r = std::sin(Math::clamp01(1.0f - w.reloadTimer / std::max(w.reloadTime, 0.01f)) * Math::PI);
+        float e = w.equipTime > 0.0f ? smooth(Math::clamp01(w.equipTimer / w.equipTime)) : 0.0f;
+        float kick = w.kick * Math::lerp(1.0f, 0.5f, aim);
+        glm::vec3 base = glm::mix(w.restPosition, w.aimPosition, aim);
+        wt.position = base + glm::vec3(w.sway.x + bobX - w.sprint * 0.05f, w.sway.y - bobY - r * 0.12f - e * 0.3f - w.sprint * 0.04f, kick * 0.07f);
+        wt.rotation = glm::vec3(kick * 5.0f - r * 28.0f - e * 35.0f - w.sprint * 12.0f, w.sway.x * 60.0f + w.sprint * 30.0f, r * 18.0f + w.sprint * 10.0f);
         if (p.dead) wt.position.y -= 1.0f;
+        if (MeshRenderer* mr = scene.tryGet<MeshRenderer>(p.weapon)) mr->visible = !scoped;
 
         // Muzzle flash mesh + light
         if (scene.valid(w.muzzleFlash)) {
             bool on = w.flashTimer > 0.0f;
-            if (MeshRenderer* mr = scene.tryGet<MeshRenderer>(w.muzzleFlash)) mr->visible = on;
+            if (MeshRenderer* mr = scene.tryGet<MeshRenderer>(w.muzzleFlash)) mr->visible = on && !scoped;
             Transform& ft = scene.get<Transform>(w.muzzleFlash);
             if (on) {
                 ft.rotation.z = Random::range(0.0f, 360.0f);
-                float s = Random::range(0.8f, 1.2f);
-                ft.scale = glm::vec3(s);
+                ft.scale = glm::vec3(Random::range(0.8f, 1.2f));
             }
             if (Light* l = scene.tryGet<Light>(w.muzzleFlash)) l->intensity = on ? 4.0f : 0.0f;
         }
@@ -420,30 +568,99 @@ void EnemySystem::onUpdate(Scene& scene, float dt) {
 }
 
 // ---------------------------------------------------------------------------
-// Projectiles
+// Projectiles: drone plasma bolts and player rockets
 // ---------------------------------------------------------------------------
 void ProjectileSystem::onUpdate(Scene& scene, float dt) {
     PhysicsWorld& physics = scene.physics();
-    Entity pe = findPlayer(scene);
 
     scene.each<Projectile, Transform>([&](Entity e, Projectile& pr, Transform& t) {
         glm::vec3 delta = pr.velocity * dt;
         float len = glm::length(delta);
         if (len < 1e-6f) return;
+        glm::vec3 dir = delta / len;
         RaycastHit hit;
-        if (physics.raycast(Ray{t.position, delta / len}, len + 0.1f, hit, pr.owner)) {
-            if (hit.entity == pe) {
-                Player& p = scene.get<Player>(pe);
-                if (Health* hp = scene.tryGet<Health>(pe); hp && !p.dead) {
-                    hp->current = std::max(0.0f, hp->current - pr.damage);
-                    p.damageFlash = 1.0f;
-                }
+        if (physics.raycast(Ray{t.position, dir}, len + 0.1f, hit, pr.owner)) {
+            if (pr.explosionRadius > 0.0f) {
+                // Pull the blast slightly off the surface so walls don't block its own line-of-sight checks.
+                Combat::explode(scene, hit.point + hit.normal * 0.25f, pr.explosionRadius, pr.damage, 16.0f, pr.owner);
+            } else {
+                // Drones don't hurt each other, but their bolts do set off barrels.
+                bool friendly = scene.valid(pr.owner) && scene.has<Enemy>(pr.owner) && scene.has<Enemy>(hit.entity);
+                if (!friendly) Combat::applyDamage(scene, hit.entity, pr.damage, dir, pr.owner);
+                Prefabs::impact(scene, hit.point, hit.normal, glm::vec4(3.0f, 1.2f, 0.4f, 1.0f));
             }
-            Prefabs::impact(scene, hit.point, hit.normal, glm::vec4(3.0f, 1.2f, 0.4f, 1.0f));
             scene.destroyEntity(e);
             return;
         }
         t.position += delta;
+        // Rockets that fly out of the arena detonate in the air when their lifetime runs out.
+        if (pr.explosionRadius > 0.0f)
+            if (Lifetime* life = scene.tryGet<Lifetime>(e); life && life->seconds <= dt * 1.5f) {
+                Combat::explode(scene, t.position, pr.explosionRadius, pr.damage, 16.0f, pr.owner);
+                scene.destroyEntity(e);
+            }
+    });
+}
+
+// ---------------------------------------------------------------------------
+// Explosive props
+// ---------------------------------------------------------------------------
+namespace {
+void setBurning(Scene& scene, Explosive& ex, bool burning) {
+    ex.burning = burning;
+    if (scene.valid(ex.fire)) scene.get<EntityInfo>(ex.fire).active = burning;
+}
+} // namespace
+
+void ExplosiveSystem::reset(Scene& scene) {
+    scene.each<Explosive, Health, EntityInfo>([&](Entity, Explosive& ex, Health& hp, EntityInfo& info) {
+        hp.current = hp.max;
+        ex.exploded = false;
+        ex.fuse = -1.0f;
+        setBurning(scene, ex, false);
+        info.active = true;
+    });
+}
+
+void ExplosiveSystem::onUpdate(Scene& scene, float dt) {
+    Entity pe = findPlayer(scene);
+    glm::vec3 playerPos = scene.valid(pe) ? scene.get<Transform>(pe).position : glm::vec3(1e6f);
+
+    scene.each<Explosive, Health, EntityInfo>([&](Entity e, Explosive& ex, Health& hp, EntityInfo& info) {
+        if (ex.exploded) {
+            if (ex.respawnTime <= 0.0f) return;
+            ex.respawnTimer -= dt;
+            // Respawn out of the player's way (never inside them).
+            if (ex.respawnTimer <= 0.0f && glm::distance(playerPos, scene.get<Transform>(e).worldPosition()) > 4.0f) {
+                hp.current = hp.max;
+                ex.exploded = false;
+                ex.fuse = -1.0f;
+                info.active = true;
+                Prefabs::impact(scene, Combat::colliderCenter(scene, e), glm::vec3(0, 1, 0), glm::vec4(0.6f, 1.5f, 3.0f, 1.0f));
+            }
+            return;
+        }
+
+        if (hp.current <= 0.0f) {
+            // Shot to death: detonate now. Caught in another blast: wait for the fuse.
+            if (ex.fuse > 0.0f) {
+                ex.fuse -= dt;
+                if (ex.fuse > 0.0f) {
+                    if (!ex.burning) setBurning(scene, ex, true);
+                    return;
+                }
+            }
+            ex.exploded = true;
+            ex.fuse = -1.0f;
+            ex.respawnTimer = ex.respawnTime;
+            setBurning(scene, ex, false);
+            info.active = false;
+            Combat::explode(scene, Combat::colliderCenter(scene, e), ex.radius, ex.damage, ex.force, NullEntity, e);
+            return;
+        }
+
+        if (!ex.burning && hp.current < hp.max * ex.igniteBelow) setBurning(scene, ex, true);
+        if (ex.burning) hp.current -= ex.burnRate * dt;
     });
 }
 
@@ -477,12 +694,17 @@ void PickupSystem::onUpdate(Scene& scene, float dt) {
                 std::snprintf(toast, sizeof(toast), "+%d HEALTH", (int)pk.amount);
                 used = true;
             }
-        } else if (scene.valid(player.weapon)) {
-            if (Weapon* w = scene.tryGet<Weapon>(player.weapon)) {
-                w->reserveAmmo += (int)pk.amount;
-                std::snprintf(toast, sizeof(toast), "+%d AMMO", (int)pk.amount);
+        } else {
+            // Ammo boxes top up every weapon in the inventory.
+            for (Entity we : weaponInventory(scene, player)) {
+                Weapon& w = scene.get<Weapon>(we);
+                int room = w.maxReserve - w.reserveAmmo;
+                int give = std::min(room, std::max(1, (int)std::lround(w.ammoPerPickup * pk.amount)));
+                if (give <= 0) continue;
+                w.reserveAmmo += give;
                 used = true;
             }
+            if (used) std::snprintf(toast, sizeof(toast), "+AMMO");
         }
         if (used) {
             pk.available = false;

@@ -63,12 +63,65 @@ struct Builder {
         return e;
     }
 
+    // Explosive barrel: one rifle hit sets it on fire, two blow it up.
     Entity barrel(const glm::vec3& pos, Entity parent) {
-        Entity e = model("Barrel", "models/barrel.obj", pos, glm::vec3(0, Random::range(0.0f, 360.0f), 0), parent);
+        Entity e = model("Explosive Barrel", "models/barrel.obj", pos, glm::vec3(0, Random::range(0.0f, 360.0f), 0), parent);
         BoxCollider& box = scene.add<BoxCollider>(e);
         box.center = glm::vec3(0, 0.6f, 0);
         box.size = glm::vec3(0.8f, 1.2f, 0.8f);
+        Health& hp = scene.add<Health>(e);
+        hp.current = hp.max = 40.0f;
+        Explosive& ex = scene.add<Explosive>(e);
+
+        // Flames on the lid, hidden until the barrel is burning.
+        Entity fire = scene.createEntity("Fire", e);
+        scene.get<Transform>(fire).position = glm::vec3(0, 1.22f, 0);
+        scene.get<EntityInfo>(fire).active = false;
+        ParticleEmitter& flames = scene.add<ParticleEmitter>(fire);
+        flames.rate = 45.0f;
+        flames.lifetime = 0.55f;
+        flames.startSpeed = 1.8f;
+        flames.direction = glm::vec3(0, 1, 0);
+        flames.spread = 0.22f;
+        flames.gravity = -0.05f;
+        flames.startSize = 0.38f;
+        flames.endSize = 0.05f;
+        flames.startColor = glm::vec4(3.5f, 1.4f, 0.35f, 0.9f);
+        flames.endColor = glm::vec4(1.0f, 0.2f, 0.05f, 0.0f);
+        Light& glow = scene.add<Light>(fire);
+        glow.type = LightType::Point;
+        glow.color = glm::vec3(1.0f, 0.55f, 0.2f);
+        glow.intensity = 2.5f;
+        glow.range = 5.0f;
+        ex.fire = fire;
         return e;
+    }
+
+    // A first-person weapon parented to the camera, with its own muzzle flash.
+    Weapon& weapon(Entity camera, const std::string& name, const std::string& mesh, float scale, const glm::vec3& muzzle) {
+        Entity e = scene.createEntity(name, camera);
+        Weapon& w = scene.add<Weapon>(e);
+        scene.get<Transform>(e).scale = glm::vec3(scale);
+        MeshRenderer& mr = scene.add<MeshRenderer>(e);
+        mr.mesh = mesh;
+        mr.layer = RenderLayer::Viewmodel;
+        mr.castShadows = false;
+
+        Entity flash = scene.createEntity("Muzzle Flash", e);
+        scene.get<Transform>(flash).position = muzzle;
+        MeshRenderer& fmr = scene.add<MeshRenderer>(flash);
+        fmr.mesh = "models/muzzleflash.obj";
+        fmr.material = "materials/MuzzleFlash.mat";
+        fmr.layer = RenderLayer::Viewmodel;
+        fmr.castShadows = false;
+        fmr.visible = false;
+        Light& fl = scene.add<Light>(flash);
+        fl.type = LightType::Point;
+        fl.color = glm::vec3(1.0f, 0.75f, 0.4f);
+        fl.intensity = 0.0f;
+        fl.range = 7.0f;
+        w.muzzleFlash = flash;
+        return w;
     }
 
     Entity pickup(const std::string& name, const glm::vec3& pos, PickupType type, Entity parent) {
@@ -83,7 +136,7 @@ struct Builder {
         mr.castShadows = false;
         Pickup& p = scene.add<Pickup>(e);
         p.type = type;
-        p.amount = health ? 35.0f : 60.0f;
+        p.amount = health ? 35.0f : 1.0f; // ammo: one box = each weapon's Ammo Per Pickup
         Spinner& s = scene.add<Spinner>(e);
         s.speed = glm::vec3(0, 120, 0);
         s.bobAmplitude = 0.15f;
@@ -201,6 +254,12 @@ void buildArena(Scene& scene) {
     b.barrel(glm::vec3(-25, 0, -25), props);
     b.barrel(glm::vec3(25, 0, -25), props);
     b.barrel(glm::vec3(-26, 0, 20), props);
+    // A tight cluster in the open for chain reactions
+    b.barrel(glm::vec3(8.5f, 0, 5.5f), props);
+    b.barrel(glm::vec3(9.4f, 0, 6.1f), props);
+    b.barrel(glm::vec3(8.7f, 0, 6.6f), props);
+    b.barrel(glm::vec3(-8.0f, 0, -6.0f), props);
+    b.barrel(glm::vec3(-8.9f, 0, -6.4f), props);
 
     // Weapon display: the glTF rifle spinning on a pedestal next to the spawn
     Entity display = scene.createEntity("Weapon Display", level);
@@ -236,7 +295,7 @@ void buildArena(Scene& scene) {
     Entity manager = scene.createEntity("Game Manager");
     scene.add<GameManager>(manager);
 
-    // Player: body (controller + hitbox) -> camera (pitch) -> rifle viewmodel -> muzzle flash
+    // Player: body (controller + hitbox) -> camera (pitch) -> weapon viewmodels -> muzzle flashes
     Entity player = scene.createEntity("Player");
     scene.get<EntityInfo>(player).tag = "Player";
     scene.get<Transform>(player).position = glm::vec3(0, 0.95f, 22);
@@ -255,32 +314,91 @@ void buildArena(Scene& scene) {
     cam.nearClip = 0.03f;
     cam.farClip = 400.0f;
 
-    Entity rifle = scene.createEntity("Rifle", camera);
-    Weapon& weapon = scene.add<Weapon>(rifle);
-    scene.get<Transform>(rifle).position = weapon.restPosition;
-    scene.get<Transform>(rifle).scale = glm::vec3(0.62f);
-    MeshRenderer& rmr = scene.add<MeshRenderer>(rifle);
-    rmr.mesh = "models/rifle.gltf";
-    rmr.layer = RenderLayer::Viewmodel;
-    rmr.castShadows = false;
+    // Aim positions put each model's sight line (see tools/generate_assets.py) on the camera axis:
+    // y = -(sight height * scale).
+    // 1: assault rifle (glTF) - automatic, red dot sight
+    Weapon& rifle = b.weapon(camera, "Assault Rifle", "models/rifle.gltf", 0.62f, glm::vec3(0, 0.045f, -0.8f));
+    rifle.slot = 1;
+    rifle.aimFov = 50.0f;
+    rifle.aimPosition = glm::vec3(0.0f, -0.112f * 0.62f, -0.33f);
 
-    Entity flash = scene.createEntity("Muzzle Flash", rifle);
-    scene.get<Transform>(flash).position = glm::vec3(0, 0.045f, -0.8f);
-    MeshRenderer& fmr = scene.add<MeshRenderer>(flash);
-    fmr.mesh = "models/muzzleflash.obj";
-    fmr.material = "materials/MuzzleFlash.mat";
-    fmr.layer = RenderLayer::Viewmodel;
-    fmr.castShadows = false;
-    fmr.visible = false;
-    Light& fl = scene.add<Light>(flash);
-    fl.type = LightType::Point;
-    fl.color = glm::vec3(1.0f, 0.75f, 0.4f);
-    fl.intensity = 0.0f;
-    fl.range = 7.0f;
+    // 2: pump shotgun - 9 pellets, devastating up close
+    Weapon& shotgun = b.weapon(camera, "Shotgun", "models/shotgun.glb", 0.62f, glm::vec3(0, 0.025f, -0.7f));
+    shotgun.slot = 2;
+    shotgun.automatic = false;
+    shotgun.damage = 12.0f;
+    shotgun.pellets = 9;
+    shotgun.fireRate = 1.25f;
+    shotgun.range = 45.0f;
+    shotgun.spread = 5.0f;
+    shotgun.recoil = 4.5f;
+    shotgun.magazineSize = shotgun.ammo = 8;
+    shotgun.reserveAmmo = 32;
+    shotgun.maxReserve = 64;
+    shotgun.ammoPerPickup = 16;
+    shotgun.reloadTime = 2.0f;
+    shotgun.impactForce = 3.0f;
+    shotgun.aimFov = 60.0f;
+    shotgun.aimSpread = 0.65f;
+    shotgun.aimPosition = glm::vec3(0.0f, -0.0505f * 0.62f, -0.25f);
+    shotgun.restPosition = glm::vec3(0.17f, -0.16f, -0.48f);
+
+    // 3: sniper rifle - one-shots drones, 6x scope
+    Weapon& sniper = b.weapon(camera, "Sniper Rifle", "models/sniper.glb", 0.6f, glm::vec3(0, 0.015f, -0.88f));
+    sniper.slot = 3;
+    sniper.automatic = false;
+    sniper.damage = 150.0f;
+    sniper.fireRate = 0.75f;
+    sniper.range = 400.0f;
+    sniper.spread = 4.0f;  // inaccurate from the hip...
+    sniper.aimSpread = 0.0f; // ...perfect through the scope
+    sniper.recoil = 5.0f;
+    sniper.magazineSize = sniper.ammo = 5;
+    sniper.reserveAmmo = 20;
+    sniper.maxReserve = 40;
+    sniper.ammoPerPickup = 10;
+    sniper.reloadTime = 2.4f;
+    sniper.impactForce = 20.0f;
+    sniper.scope = true;
+    sniper.aimFov = 14.0f;
+    sniper.aimSpeed = 8.0f;
+    sniper.aimPosition = glm::vec3(0.0f, -0.085f * 0.6f, -0.22f);
+    sniper.restPosition = glm::vec3(0.15f, -0.15f, -0.48f);
+
+    // 4: rocket launcher - explosive splash damage (and rocket jumps)
+    Weapon& launcher = b.weapon(camera, "Rocket Launcher", "models/launcher.glb", 0.6f, glm::vec3(0, 0, -0.7f));
+    launcher.slot = 4;
+    launcher.kind = WeaponKind::Launcher;
+    launcher.automatic = false;
+    launcher.damage = 130.0f;
+    launcher.fireRate = 0.8f;
+    launcher.spread = 0.3f;
+    launcher.recoil = 3.0f;
+    launcher.magazineSize = launcher.ammo = 3;
+    launcher.reserveAmmo = 9;
+    launcher.maxReserve = 18;
+    launcher.ammoPerPickup = 4;
+    launcher.reloadTime = 2.6f;
+    launcher.equipTime = 0.5f;
+    launcher.projectileSpeed = 30.0f;
+    launcher.explosionRadius = 5.5f;
+    launcher.aimFov = 58.0f;
+    launcher.aimSpread = 0.5f;
+    // The sight sits up-left of the tube; when aiming the tube rests on the shoulder beside the head.
+    launcher.aimPosition = glm::vec3(0.11f * 0.6f, -0.10f * 0.6f, -0.1f);
+    launcher.restPosition = glm::vec3(0.2f, -0.18f, -0.42f);
+
+    // Only the equipped weapon is active; WeaponSystem toggles them when switching.
+    Entity rifleEntity = NullEntity;
+    for (Entity we : scene.get<Transform>(camera).children) {
+        Weapon& w = scene.get<Weapon>(we);
+        scene.get<Transform>(we).position = w.restPosition;
+        scene.get<EntityInfo>(we).active = w.slot == 1;
+        if (w.slot == 1) rifleEntity = we;
+    }
 
     pc.camera = camera;
-    pc.weapon = rifle;
-    weapon.muzzleFlash = flash;
+    pc.weapon = rifleEntity;
 
     scene.updateTransforms();
     LOG_INFO("Arena built: %zu entities", scene.entityCount());

@@ -7,7 +7,8 @@ complete **first-person shooter** made with it.
 - **Renderer**: PBR forward shading, directional shadow maps, **SSAO**, HDR + bloom, ACES tone mapping, FXAA, procedural sky, fog
 - **Model loaders**: Wavefront **OBJ/MTL** and **glTF 2.0** (`.gltf` + `.bin` / embedded, and binary `.glb`)
 - **Editor**: dockable Hierarchy, Scene view (gizmos, picking, grid), Game view, Inspector, Project browser, Console, Lighting; play mode, undo/redo, scene save/load
-- **Game**: wave-based arena shooter with hovering drones, hitscan rifle, pickups, HUD
+- **Game**: wave-based arena shooter with hovering drones and four weapons (assault rifle, shotgun, scoped sniper rifle, rocket launcher) with aim-down-sights. Explosive barrels burn and chain-react. Also pickups and a HUD.
+- **Pause menu** (Resume / Settings / Quit) with persistent settings: sensitivity, invert Y, FOV, VSync, fullscreen, graphics toggles
 
 ```
 build.bat                                  # build (MSVC + CMake + Ninja), Release by default

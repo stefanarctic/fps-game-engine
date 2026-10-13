@@ -8,6 +8,8 @@ struct ImFont;
 
 namespace Forge {
 
+enum class PauseMenuStart { Closed, Main, Settings };
+
 struct AppConfig {
     std::string title = "Forge Engine";
     int width = 1600;
@@ -23,6 +25,7 @@ struct AppConfig {
     bool rebuildScene = false;     // --rebuild-scene : regenerate the game's default scene and save it
     std::string screenshotPath;    // --screenshot <file.png>
     int screenshotFrame = 120;     // --frames <n> : capture after n frames, then exit
+    PauseMenuStart pauseMenu = PauseMenuStart::Closed; // --pause / --pause-settings : open the pause menu once playing
 
     static AppConfig fromArgs(int argc, char** argv, AppConfig defaults = AppConfig());
 };
@@ -64,6 +67,10 @@ public:
     void setTitle(const std::string& title);
     void setVSync(bool enabled);
     bool vsync() const { return m_VSync; }
+    // Borderless fullscreen on the primary monitor (restores the previous window rect).
+    void setFullscreen(bool enabled);
+    bool isFullscreen() const { return m_Fullscreen; }
+    bool windowFocused() const;
 
     // Saves the next presented frame (whole window) as a PNG.
     void requestScreenshot(const std::string& path) { m_PendingScreenshot = path; }
@@ -83,6 +90,8 @@ private:
     std::string m_PendingScreenshot;
     bool m_Running = true;
     bool m_VSync = true;
+    bool m_Fullscreen = false;
+    int m_WindowedRect[4] = {100, 100, 1600, 900};
     bool m_Initialized = false;
 };
 

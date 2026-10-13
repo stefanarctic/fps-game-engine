@@ -84,7 +84,9 @@ cmake --build build/vs --config Release
 | `FPSGame.exe --play` | Opens the editor and immediately enters play mode. |
 | `ForgeTests.exe` | Runs the automated test suite. |
 
-Inside the editor's Game view, **click to capture the mouse**, **Esc** to release it.
+Inside the editor's Game view, **click to capture the mouse**; **Esc** releases it and opens the
+**pause menu** (Resume / Settings / Exit Play Mode). In the standalone game **Esc** opens the same menu
+(Resume / Settings / Quit).
 
 ---
 
@@ -98,13 +100,14 @@ FPS-Game-Engine/
 ├── README.md
 ├── assets/                     everything loaded at runtime
 │   ├── shaders/                GLSL programs (*.glsl, hot reloaded)
-│   ├── models/                 crate/barrel/pillar/muzzleflash .obj+.mtl, rifle.gltf+.bin, drone.glb
+│   ├── models/                 crate/barrel/pillar/muzzleflash/rocket .obj+.mtl, rifle.gltf+.bin,
+│   │                           shotgun.glb, sniper.glb, launcher.glb, drone.glb
 │   ├── textures/               procedural PNGs
 │   ├── materials/              *.mat (JSON)
 │   └── scenes/                 *.scene (JSON) — Arena.scene is generated on first run
 ├── engine/                     ForgeEngine static library (runtime)
 │   ├── include/Forge/          public headers (Forge/Forge.h is the umbrella header)
-│   │   ├── Core/               Application, Layer, Game, Input, Time, Log, FileSystem, Json
+│   │   ├── Core/               Application, Layer, Game, Input, Time, Log, FileSystem, Json, Settings
 │   │   ├── Math/               AABB, Ray, Frustum, euler/matrix helpers, Random
 │   │   ├── ECS/                Registry (sparse sets), System, Reflection
 │   │   ├── Scene/              Scene, built-in Components, CoreSystems, SceneSerializer
@@ -112,7 +115,8 @@ FPS-Game-Engine/
 │   │   ├── Renderer/           Shader, Texture2D, Framebuffer, Mesh, Material/Model,
 │   │   │                       Primitives, DebugDraw, SceneRenderer
 │   │   ├── Assets/             AssetManager, ModelLoaders (OBJ, glTF)
-│   │   └── Runtime/            RuntimeLayer (standalone player)
+│   │   ├── Runtime/            RuntimeLayer (standalone player)
+│   │   └── UI/                 PauseMenu (in-game Resume / Settings / Quit menu)
 │   └── src/                    implementation (.cpp) mirroring the include tree
 ├── editor/                     ForgeEditor static library (Unity-style editor)
 │   ├── include/Forge/Editor/   EditorLayer, EditorCamera, PropertyDrawer, Icons, EditorTheme
@@ -188,7 +192,43 @@ return app.run();
 
 `Layer` callbacks: `onAttach`, `onDetach`, `onUpdate(float dt)`, `onImGui()`.
 `Application::get()` gives access to the window, fonts (`fonts().regular/bold/medium/large`),
-`framebufferSize()`, `setTitle`, `setVSync`, `requestScreenshot(path)` and `close()`.
+`framebufferSize()`, `setTitle`, `setVSync`, `setFullscreen` (borderless, primary monitor),
+`windowFocused()`, `requestScreenshot(path)` and `close()`.
+
+### Settings and the pause menu
+
+`Forge::Settings::get()` returns the player's `GameSettings`, loaded at startup from
+`ForgeSettings.json` (next to the asset folder) and saved when the player leaves the settings page:
+
+| Group | Field | Used by |
+|---|---|---|
+| Controls | `mouseSensitivity` (multiplier), `invertY`, `holdToAim` | the game's player/weapon systems |
+| Display | `fieldOfView`, `vsync`, `fullscreen` (standalone only), `showFps` | game camera, `Application`, `RuntimeLayer` |
+| Graphics | `shadows`, `ambientOcclusion`, `bloom`, `antiAliasing` | `RenderOptions::fromSettings()` for game views |
+
+`Settings::apply()` pushes the display options to the window. The graphics switches are combined with the
+scene's `Environment` toggles: a feature renders only when both allow it, and the editor's Scene view
+ignores them.
+
+`Forge::PauseMenu` (`Forge/UI/PauseMenu.h`) is a reusable in-game menu with **Resume**, **Settings** and
+**Quit**. The settings page edits `GameSettings` live and has **Reset to Defaults** and **Back**. Both
+hosts use it, so every game gets it for free:
+
+- **Standalone player (`RuntimeLayer`):** Esc, or alt-tabbing away, pauses the simulation, unlocks the
+  cursor and opens the menu. Quit closes the application.
+- **Editor Game view:** Esc releases the mouse, freezes the simulation and shows the menu over the
+  Game view. Resume recaptures the mouse; the last button reads *Exit Play Mode*.
+
+```cpp
+if (escapePressed) menu.open();
+switch (menu.draw(viewport, "My Game")) {     // inside an ImGui window covering the viewport
+case PauseMenu::Action::Resume: /* relock the cursor */ break;
+case PauseMenu::Action::Quit:   Application::get().close(); break;
+default: break;
+}
+```
+
+Esc on the settings page goes back; Esc on the main page resumes.
 
 ### Game interface
 
@@ -321,7 +361,7 @@ Header: `Forge/Scene/Components.h`. Every entity always has `EntityInfo` and `Tr
 | `BoxCollider` | `center`, `size`, `isTrigger` | Local-space box, transformed by the entity's world matrix. |
 | `RigidBody` | `mass`, `drag`, `bounciness`, `useGravity`, `isKinematic` (+ runtime `velocity`) | Simulated by `RigidBodySystem` against colliders. |
 | `CharacterController` | `height`, `radius` (+ runtime `velocity`, `grounded`) | Moved by gameplay code via `PhysicsWorld::moveBox`. |
-| `ParticleEmitter` | `emitting`, `loop`, `rate`, `burst`, `maxParticles`, `lifetime`, `startSpeed`, `spread`, `direction`, `gravity`, `drag`, `startSize/endSize`, `startColor/endColor` (HDR) | CPU particles, additive camera-facing quads. |
+| `ParticleEmitter` | `emitting`, `blend` (Additive/Alpha), `loop`, `rate`, `burst`, `maxParticles`, `lifetime`, `startSpeed`, `spread`, `direction`, `gravity`, `drag`, `startSize/endSize`, `startColor/endColor` (HDR) | CPU particles, camera-facing quads. Additive for fire and sparks, Alpha for smoke and debris. |
 | `Lifetime` | `seconds` | Entity is destroyed when it reaches 0 (play mode). |
 
 ---
@@ -410,7 +450,9 @@ Create one per view (the editor has two: Scene view and Game view; the player ha
 ```cpp
 SceneRenderer renderer;
 CameraData cam = CameraData::fromEntity(scene, scene.primaryCamera(), aspect);
-RenderOptions opt;                 // debugView, editor, grid, gizmos, outline, debugLines
+RenderOptions opt;                 // debugView, editor, grid, gizmos, outline, debugLines,
+                                   // shadows / ambientOcclusion / bloom / antiAliasing switches
+// or RenderOptions::fromSettings() to honour the player's graphics settings (game views)
 renderer.render(scene, cam, width, height, opt);
 ImGui::Image((ImTextureID)(uintptr_t)renderer.outputTexture(), size, {0, 1}, {1, 0});
 ```
@@ -503,7 +545,7 @@ programs; on a compile error the previous program is kept and the error is print
 | `Skybox.glsl` | Procedural gradient sky with sun disc |
 | `Grid.glsl` | Infinite editor grid (1 m / 10 m lines, red X and blue Z axes) |
 | `Lines.glsl` | Debug / gizmo lines |
-| `Particles.glsl` | Soft additive particles |
+| `Particles.glsl` | Soft round particles (drawn alpha-blended or additive) |
 | `BloomPrefilter.glsl`, `Blur.glsl` | Bloom |
 | `Composite.glsl` | Tone mapping, gamma, vignette |
 | `FXAA.glsl` | Anti-aliasing |
@@ -611,9 +653,13 @@ for editor picking (`Model::raycast`).
 
 `python tools/generate_assets.py` (standard library only) regenerates everything in `assets/textures`,
 `assets/models` and `assets/materials`: a PNG encoder, tileable fBm noise textures (prototype grid,
-concrete, crate, brushed metal, hazard stripes), OBJ/MTL writers (crate, barrel, pillar, muzzle
-flash), a glTF writer (rifle with a node hierarchy and quaternion-rotated parts, external `.bin`) and a
-GLB writer (drone with an **embedded PNG** and emissive-strength materials).
+concrete, crate, brushed metal, hazard stripes), OBJ/MTL writers (crate, explosive barrel, pillar,
+muzzle flash, rocket), a glTF writer (rifle with a node hierarchy and quaternion-rotated parts,
+external `.bin`) and a GLB writer (shotgun, sniper rifle, rocket launcher, and the drone with an
+**embedded PNG** and emissive-strength materials). Each weapon's docstring gives its sight-line
+height and muzzle position, which `ArenaBuilder.cpp` uses for the aim positions and muzzle flashes.
+The open reflex sights (`reflex_sight`) are hollow frames with a floating emissive dot, so you can see
+through them when aiming.
 
 ---
 
@@ -640,7 +686,10 @@ Limitations: no rotational dynamics, boxes only (sufficient for blockout-style l
 
 - **ParticleEmitter** + `ParticleSystem`: CPU simulation (gravity, drag, size/color over lifetime),
   bursts for one-shot effects (`loop = false`, `burst = N`), continuous emission (`rate`). Rendered as
-  soft additive billboards in the HDR pass, so HDR colors bloom.
+  soft billboards in the HDR pass in two batches: `Alpha` emitters first (smoke, debris, which can be
+  dark), then `Additive` ones (fire, sparks; HDR colors bloom). Particles live in world space and
+  emitters compute their current world transform when they emit, so effects spawned by gameplay code
+  mid-frame start at the right place.
 - **Lifetime**: auto-destroys an entity after N seconds (impacts, explosions, projectiles).
 - **DebugDraw**: `DebugDraw::line/box/sphere(..., color, duration)` from anywhere; lines with a duration
   persist (the rifle's bullet tracers use this). `LineBatch` offers lines, boxes, circles, spheres,
@@ -699,6 +748,11 @@ Pressing Play serializes the scene to an in-memory JSON snapshot, then calls `Sc
 Stop calls `endPlay` and restores the snapshot, so **changes made while playing are reverted** (like
 Unity). The editor UI is tinted while playing. Selection is preserved by UUID.
 
+In the Game view, clicking captures the mouse for gameplay. **Esc** releases it and opens the in-game
+pause menu (`Forge::PauseMenu`, see [Settings and the pause menu](#settings-and-the-pause-menu)),
+which freezes the simulation until *Resume*. *Exit Play Mode* in that menu is the same as pressing Stop.
+The Game view renders with the player's graphics settings.
+
 ### Undo / redo
 
 Every editing operation (inspector edits, gizmo drags, create/delete/duplicate/paste, re-parenting,
@@ -711,7 +765,7 @@ This approach is simple and robust for game-sized scenes.
 *File* (new/open/save/save as/exit), *Edit* (undo/redo, clipboard, frame, play controls, VSync),
 *Assets* (create material, reload shaders, reload assets), *GameObject* (create empty / 3D objects /
 lights / particle system / camera, create child, clear parent), *Component* (add any registered
-component), game menus (*Arena*: rebuild level, spawn drone, restart), *Window* (panels, reset layout,
+component), game menus (*Arena*: rebuild level, spawn drone, restart, reset explosive barrels), *Window* (panels, reset layout,
 ImGui demo), *Help* (about + controls).
 
 ---
@@ -727,33 +781,98 @@ bolts at the player. Survive as many waves as possible.
 |---|---|
 | Mouse | look |
 | W A S D | move |
-| Shift | sprint |
+| Shift | sprint (not while aiming or firing) |
 | Space | jump (1 m high obstacles can be jumped onto) |
-| Left mouse | fire (automatic) |
+| Left mouse | fire (hold for the assault rifle, click for the others; a click during the cooldown is buffered) |
+| Right mouse | aim down sights / scope (hold, or toggle if *Hold to aim* is off in Settings) |
+| 1 2 3 4 | assault rifle, shotgun, sniper rifle, rocket launcher |
+| Mouse wheel / Q | next-previous weapon / last used weapon |
 | R | reload / restart after death |
-| Esc | release mouse (editor) / pause (standalone) |
-| F3 | stats overlay (standalone) |
+| Esc | pause menu (Resume / Settings / Quit; the editor's Game view also releases the mouse) |
+| F3 | FPS overlay (standalone; same as *Show FPS* in Settings) |
+
+### Weapons
+
+Every weapon is an entity with a `Weapon` component under the player's camera. Its `slot` is the
+number key that selects it and its order in the inventory; only the equipped one is active.
+Switching plays a lower/raise animation (`equipTime`) and cancels the old weapon's reload.
+
+| Slot | Weapon | Model | Fire | Damage | Magazine / reserve | Aim (FOV) |
+|---|---|---|---|---|---|---|
+| 1 | Assault Rifle | `rifle.gltf` | automatic, 9 rounds/s | 22 | 30 / 150 | red-dot sight (50°) |
+| 2 | Shotgun | `shotgun.glb` | pump, 9 pellets, 5° spread | 12 per pellet | 8 / 32 | bead sight (60°), spread ×0.65 |
+| 3 | Sniper Rifle | `sniper.glb` | bolt, 0.75 rounds/s | 150 (one-shots drones) | 5 / 20 | **scope** (14°), perfectly accurate when scoped, 4° spread from the hip |
+| 4 | Rocket Launcher | `launcher.glb` | single rockets, 30 m/s | 130 at the center, 5.5 m radius | 3 / 9 | side-mounted reflex sight (58°) |
+
+- **Hitscan** weapons (`kind = Hitscan`) cast `pellets` rays inside a cone of `spread` degrees,
+  plus `bloom` that grows under sustained fire. They draw tracers, spawn impact sparks and push
+  rigid bodies (`impactForce`).
+- **Launchers** (`kind = Launcher`) raycast from the camera to find what the crosshair is on, then fire a
+  `Prefabs::rocket` from the muzzle towards that point. The rocket is a `Projectile` with
+  `explosionRadius`, an exhaust flame and a smoke trail. It explodes on impact or when its
+  lifetime ends. Its blast hurts the shooter too (at 40%) and pushes them, so rocket jumps work.
+- **Aiming down sights**: `aim` blends 0 → 1 at `aimSpeed` while the right button is held.
+  - The viewmodel moves from `restPosition` to `aimPosition`, which puts the model's sight line on
+    the camera axis.
+  - The camera FOV goes from the player's FOV setting to `aimFov`.
+  - Spread is multiplied by `aimSpread`, while sway, bob, recoil and walk speed are reduced.
+  - Mouse sensitivity scales with the zoom, so aiming feels consistent.
+  - The crosshair fades out.
+  - Aiming is blocked while sprinting, reloading or switching.
+- **Scopes** (`scope = true`): once fully aimed, the FOV snaps to the scope's magnification, the
+  viewmodel is hidden and the HUD draws a scope overlay: black outside a circular lens, a reticle with
+  mil-dots and posts, and lens-edge shading.
+- Each weapon has its own ammo. An ammo box gives every weapon its `ammoPerPickup` (× the pickup's
+  `amount`), up to `maxReserve`.
+
+### Explosive barrels
+
+Barrels (`models/barrel.obj`, red with a yellow warning band) have `Health` (40) and an `Explosive`
+component:
+
+1. **Damage** from bullets, pellets, drone plasma bolts or explosions lowers their health.
+2. **Igniting**: below `igniteBelow` (60%) the barrel catches fire. Its `Fire` child, with flame
+   particles and a flickering light, is activated, and the barrel loses `burnRate` health per second.
+   One rifle hit sets a barrel on fire and it blows up a moment later; two hits detonate it at once.
+3. **Detonation** (`Combat::explode`):
+   - Fireball, debris and a smoke column, plus a light flash.
+   - Radial damage (`damage` at the center, falling linearly to 25% at `radius`). Solid geometry in
+     between blocks it (line-of-sight raycast).
+   - Impulses on rigid bodies, knockback on the player, and camera shake that fades with distance.
+4. **Chain reactions**: explosives caught in a blast get a short random fuse (0.12–0.3 s) instead
+   of detonating in the same frame, so clusters go off in a satisfying ripple. Several clusters are
+   placed in the arena for this.
+5. **Respawn**: an exploded barrel is deactivated and comes back after `respawnTime` (40 s), but never
+   while the player stands within 4 m. *Restart* and *Arena → Reset Explosive Barrels* restore them
+   immediately.
+
+Drones caught in a blast die and score as usual, which makes barrels a good crowd-control tool.
 
 ### Gameplay
 
-- **Rifle**: 30-round magazine, 9 rounds/s hitscan, spread that blooms under sustained fire, recoil
-  kick, reload animation, muzzle flash (emissive mesh + point light), bullet tracers, sparks on
-  impact, pushes physics crates.
-- **Drones** (`models/drone.glb`): keep a preferred distance, strafe, bob, bank into turns, check line
-  of sight before firing, lead their shots, flash red when hit, explode (particles + light flash).
-  60 HP, 100 points each.
+- **Drones** (`models/drone.glb`):
+  - Keep a preferred distance, strafe, bob and bank into turns.
+  - Check line of sight before firing and lead their shots.
+  - Flash red and get knocked back when hit, explode on death (particles + light flash).
+  - 60 HP, 100 points each. Their plasma bolts hurt the player and set off barrels, but not other
+    drones.
 - **Waves**: wave *n* spawns `3 + 2·(n−1)` drones (max 10 alive) from spawn points.
-- **Pickups**: health (+35) and ammo (+60) with respawn timers.
-- **HUD**: dynamic crosshair, hit marker, health bar, ammo counter, reload progress, wave/score/kills,
-  wave announcements, pickup toasts, damage vignette, game-over screen.
+- **Pickups**: health (+35) and ammo boxes (every weapon), with respawn timers.
+- **HUD**:
+  - Crosshair: dynamic, fades while aiming. Hit marker, and the scope overlay for the sniper.
+  - Status: health bar, ammo counter, reload progress, and the weapon name with an inventory strip
+    (slots 1–4, equipped one highlighted, empty ones in red).
+  - Messages: weapon-switch banner, wave/score/kills, wave announcements and pickup toasts.
+  - Damage vignette and game-over screen.
 
 ### Code map (`game/src/`)
 
 | File | Contents |
 |---|---|
-| `GameComponents.h/.cpp` | `Player`, `Health`, `Weapon`, `Enemy`, `Projectile`, `Pickup`, `Spinner`, `SpawnPoint`, `GameManager` + reflection registration |
-| `GameSystems.h/.cpp` | `GameManagerSystem` (waves, score, game over, restart), `PlayerSystem` (look, walk, sprint, jump, head bob, death camera), `WeaponSystem` (firing, spread, recoil, reload, viewmodel sway/bob/kick, muzzle flash), `EnemySystem` (AI, shooting, death), `ProjectileSystem` (swept raycasts), `PickupSystem`, `SpinnerSystem` |
-| `Prefabs.h/.cpp` | Code prefabs: drone, plasma bolt, impact sparks, explosion |
+| `GameComponents.h/.cpp` | `Player`, `Health`, `Weapon`, `Explosive`, `Enemy`, `Projectile`, `Pickup`, `Spinner`, `SpawnPoint`, `GameManager` + reflection registration |
+| `GameSystems.h/.cpp` | `GameManagerSystem` (waves, score, game over, restart), `PlayerSystem` (look with settings-driven sensitivity/invert, walk, sprint, jump, head bob, camera shake, death camera), `WeaponSystem` (inventory, switching, aiming/scopes, hitscan + rocket firing, spread, recoil, reload, viewmodel animation, muzzle flash), `EnemySystem` (AI, shooting, death), `ProjectileSystem` (bolts and rockets, swept raycasts), `ExplosiveSystem` (ignite, burn, detonate, respawn), `PickupSystem`, `SpinnerSystem` |
+| `Combat.h/.cpp` | `applyDamage` (health + hit reactions + hit marker) and `explode` (radial damage, line of sight, chain reactions, impulses, shake) |
+| `Prefabs.h/.cpp` | Code prefabs: drone, plasma bolt, rocket, impact sparks, explosion (scalable, with debris and smoke) |
 | `ArenaBuilder.cpp` | Builds the default level (saved to `scenes/Arena.scene`) |
 | `Hud.cpp` | HUD drawn with ImGui draw lists |
 | `FPSGame.h/.cpp` | The `Forge::Game` implementation |
@@ -762,14 +881,19 @@ bolts at the player. Survive as many waves as possible.
 ### Player rig
 
 ```
-Player            CharacterController, BoxCollider (hitbox), Health, Player
-└─ Main Camera    Camera (primary) — pitch, head bob, recoil
-   └─ Rifle       MeshRenderer (rifle.gltf, Viewmodel layer), Weapon
-      └─ Muzzle Flash   MeshRenderer (muzzleflash.obj, hidden), Light
+Player                  CharacterController, BoxCollider (hitbox), Health, Player
+└─ Main Camera          Camera (primary) — pitch, head bob, recoil, shake, aim zoom
+   ├─ Assault Rifle     MeshRenderer (rifle.gltf, Viewmodel layer), Weapon (slot 1)
+   │  └─ Muzzle Flash   MeshRenderer (muzzleflash.obj, hidden), Light
+   ├─ Shotgun           ... (shotgun.glb, slot 2, inactive until equipped)
+   ├─ Sniper Rifle      ... (sniper.glb, slot 3)
+   └─ Rocket Launcher   ... (launcher.glb, slot 4)
 ```
 
-`Player.camera`, `Player.weapon` and `Weapon.muzzleFlash` are **entity references** edited in the
-Inspector and saved by UUID.
+`Player.camera`, `Player.weapon` (the equipped weapon) and `Weapon.muzzleFlash` are **entity
+references** edited in the Inspector and saved by UUID. To add a weapon, duplicate one of the weapon
+entities under the camera, give it a free `slot` and tune its fields in the Inspector. The inventory
+is discovered from the camera's children, so no code is needed.
 
 ### Editing the level
 
@@ -871,7 +995,7 @@ Copy `assets/shaders/` into your asset folder (the renderer needs them); everyth
 | Math | compose/decompose round trip, yaw/pitch ↔ direction, ray/AABB, transformed bounds, frustum culling |
 | Scene serialization | hierarchy, world transforms, reflected fields, **entity references across save/load**, environment, duplicate with fresh UUIDs and remapped references, re-parenting with world transform kept, recursive destroy |
 | Physics | raycasts (distance, normal, ignore), box falling onto the floor, sliding into walls, rigid body settling under gravity |
-| Model loaders | on-the-fly OBJ with quads/negative indices/no normals/two materials, crate OBJ bounds + texture, rifle glTF node transforms, drone GLB embedded texture + emissive strength, primitives + mesh raycast, material loading, **all 16 shaders compile** (hidden OpenGL context) |
+| Model loaders | on-the-fly OBJ with quads/negative indices/no normals/two materials, crate OBJ bounds + texture, rifle glTF node transforms, drone GLB embedded texture + emissive strength, weapon GLB extents (muzzle positions), rocket OBJ orientation, primitives + mesh raycast, material loading, **all 16 shaders compile** (hidden OpenGL context) |
 
 ---
 
@@ -887,7 +1011,8 @@ Copy `assets/shaders/` into your asset folder (the renderer needs them); everyth
 | `--select <name>` | select an entity by name at startup (editor) |
 | `--width <px>` / `--height <px>` | initial window size |
 | `--maximized` | start maximized |
-| `--novsync` | disable vertical sync |
+| `--novsync` | disable vertical sync (overrides the VSync setting for this run) |
+| `--pause` / `--pause-settings` | open the pause menu (or its settings page) once the game is playing (standalone, or editor with `--play`) |
 | `--screenshot <file.png>` | save a PNG of the window ... |
 | `--frames <n>` | ... after *n* frames (default 120), then exit — handy for automated visual checks |
 
@@ -903,9 +1028,10 @@ relative to `assets/`.
 
 - Physics uses boxes only and no rotational dynamics; slopes/stairs are not supported (jumpable steps are).
 - One shadow-casting directional light (no cascades, no point/spot shadows); max 16 point/spot lights per view.
-- Opaque materials only (no alpha blending/sorting except additive particles); no normal maps.
+- Opaque materials only (no alpha blending/sorting except particles, which are not depth-sorted); no normal maps.
 - glTF: no skinning/animation, morph targets, sparse accessors, KTX textures or texture transforms.
-- No audio module.
+- No audio module (so the settings page has no volume options) and no key rebinding.
+- Rockets fly straight (no gravity/arc); explosion line-of-sight uses one ray to the target's collider center.
 - Undo uses whole-scene snapshots (fast for small/medium scenes, memory-heavy for huge ones).
 
 **Ideas for extension**: cascaded shadow maps, normal/ORM maps (tangents in `Vertex`), skeletal

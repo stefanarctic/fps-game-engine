@@ -13,8 +13,9 @@ struct Player {
     float jumpSpeed = 7.5f;
     float mouseSensitivity = 0.12f;
     float eyeHeight = 0.7f;            // camera offset above the body center
+    float aimMoveMultiplier = 0.6f;    // walk speed while aiming down sights
     Entity camera = NullEntity;        // child camera (pitch)
-    Entity weapon = NullEntity;        // viewmodel weapon (child of the camera)
+    Entity weapon = NullEntity;        // equipped weapon; every Weapon under the camera is in the inventory
 
     // Runtime
     float yaw = 0.0f;
@@ -23,7 +24,12 @@ struct Player {
     float bobPhase = 0.0f;
     float bobAmount = 0.0f;
     float damageFlash = 0.0f;
+    float shake = 0.0f;                // camera shake from explosions (0..1)
     bool dead = false;
+    bool sprinting = false;
+    bool aimToggled = false;           // toggle-aim mode state
+    Entity previousWeapon = NullEntity;
+    float switchBanner = 0.0f;         // HUD weapon-name banner timer
     glm::vec3 spawnPosition{0.0f};
     float spawnYaw = 0.0f;
 };
@@ -33,8 +39,15 @@ struct Health {
     float max = 100.0f;
 };
 
+// Hitscan weapons trace rays (rifle, shotgun, sniper); launchers fire explosive rockets.
+enum class WeaponKind : int { Hitscan = 0, Launcher = 1 };
+
 struct Weapon {
-    float damage = 22.0f;
+    int slot = 1;                      // number key that selects it, also the inventory order
+    WeaponKind kind = WeaponKind::Hitscan;
+    bool automatic = true;             // hold to fire; otherwise one shot per click
+    float damage = 22.0f;              // per pellet / per rocket explosion
+    int pellets = 1;                   // rays per shot (shotgun)
     float fireRate = 9.0f;             // rounds per second
     float range = 200.0f;
     float spread = 0.6f;               // base spread (degrees)
@@ -42,8 +55,23 @@ struct Weapon {
     int magazineSize = 30;
     int ammo = 30;
     int reserveAmmo = 150;
+    int maxReserve = 300;
+    int ammoPerPickup = 60;            // rounds granted by an ammo box
     float reloadTime = 1.5f;
+    float equipTime = 0.35f;
     float impactForce = 7.0f;
+
+    // Aiming down sights / scope
+    float aimFov = 52.0f;              // camera field of view when fully aimed
+    glm::vec3 aimPosition{0.0f, -0.07f, -0.32f};
+    float aimSpeed = 10.0f;            // blend speed into/out of aiming
+    float aimSpread = 0.3f;            // spread multiplier while aiming
+    bool scope = false;                // full-screen scope overlay (hides the viewmodel)
+
+    // Launcher
+    float projectileSpeed = 32.0f;
+    float explosionRadius = 5.0f;
+
     Entity muzzleFlash = NullEntity;
     glm::vec3 restPosition{0.16f, -0.15f, -0.5f};
 
@@ -54,7 +82,30 @@ struct Weapon {
     float bloom = 0.0f;                // extra spread from sustained fire
     float flashTimer = 0.0f;
     float kick = 0.0f;
+    float aim = 0.0f;                  // 0 = hip, 1 = fully aimed
+    float equipTimer = 0.0f;
+    float sprint = 0.0f;               // sprint pose blend
+    float queuedShot = 0.0f;           // semi-auto click buffered during the cooldown
+    int initialReserve = -1;           // reserve at the start of play (restored on restart)
     glm::vec2 sway{0.0f};
+};
+
+// Barrels and other props that burn when damaged and explode when destroyed,
+// damaging everything around them (including other explosives: chain reactions).
+struct Explosive {
+    float radius = 5.5f;
+    float damage = 120.0f;
+    float force = 14.0f;               // impulse given to rigid bodies
+    float igniteBelow = 0.6f;          // starts burning below this fraction of its health
+    float burnRate = 22.0f;            // health lost per second while burning
+    float respawnTime = 40.0f;         // 0 = never comes back
+    Entity fire = NullEntity;          // child with the fire particles + light, shown while burning
+
+    // Runtime
+    bool burning = false;
+    bool exploded = false;
+    float fuse = -1.0f;                // delay before a chain-reaction detonation
+    float respawnTimer = 0.0f;
 };
 
 struct Enemy {
@@ -79,13 +130,14 @@ struct Projectile {
     float damage = 9.0f;
     glm::vec3 velocity{0.0f};
     Entity owner = NullEntity;
+    float explosionRadius = 0.0f;      // > 0: explodes on impact (rockets)
 };
 
 enum class PickupType : int { Health = 0, Ammo = 1 };
 
 struct Pickup {
     PickupType type = PickupType::Health;
-    float amount = 35.0f;
+    float amount = 35.0f;              // health points, or ammo boxes (x each weapon's Ammo Per Pickup)
     float respawnTime = 15.0f;
 
     // Runtime

@@ -65,8 +65,11 @@ void ParticleSystem::onUpdate(Scene& scene, float dt) {
 
         if (!active || !em.emitting) return;
 
-        glm::vec3 origin = t.worldPosition();
-        glm::vec3 dir = glm::mat3(t.world) * em.direction;
+        // Fresh world matrix: emitters spawned or moved by gameplay code this frame have
+        // not been through Scene::updateTransforms yet (t.world would be stale/identity).
+        glm::mat4 world = scene.parentWorld(e) * t.localMatrix();
+        glm::vec3 origin = glm::vec3(world[3]);
+        glm::vec3 dir = glm::mat3(world) * em.direction;
         float len = glm::length(dir);
         dir = len > 1e-5f ? dir / len : glm::vec3(0, 1, 0);
 

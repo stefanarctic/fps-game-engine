@@ -14,3 +14,8 @@ newmtl BarrelRing
 Kd 0.18 0.18 0.19
 Ns 120
 Pm 0.8
+
+newmtl BarrelStripe
+Kd 0.95 0.72 0.08
+Ns 40
+Pm 0.1

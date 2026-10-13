@@ -64,11 +64,17 @@ void EditorLayer::onUpdate(float dt) {
         first = false;
         if (!m_Config.select.empty()) select(m_Scene->findByName(m_Config.select));
         if (m_Config.autoplay) play();
+        if (m_Config.autoplay && m_Config.pauseMenu == PauseMenuStart::Main) m_PauseMenu.open();
+        if (m_Config.autoplay && m_Config.pauseMenu == PauseMenuStart::Settings) m_PauseMenu.openSettings();
     }
 
     Input::setEnabled(m_GameCaptured);
     switch (m_State) {
-    case PlayState::Playing: m_Scene->update(dt * Time::timeScale()); break;
+    case PlayState::Playing:
+        // The in-game pause menu freezes the simulation like the standalone player does.
+        if (m_PauseMenu.isOpen()) m_Scene->updateTransforms();
+        else m_Scene->update(dt * Time::timeScale());
+        break;
     case PlayState::Paused:
         if (m_StepFrame) {
             m_Scene->update(1.0f / 60.0f);
@@ -190,10 +196,9 @@ void EditorLayer::stop() {
     if (Json::parse(m_PlaySnapshot, json)) SceneSerializer::deserialize(*m_Scene, json);
     m_Selected = m_Scene->findByUUID(selection);
     m_State = PlayState::Edit;
-    m_GameCaptured = false;
-    Input::setCursorLocked(false);
+    m_PauseMenu.close();
+    captureGameMouse(false);
     Input::setEnabled(false);
-    ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
     DebugDraw::clearAll();
     m_FocusSceneTab = true;
     LOG_INFO("Exited play mode (scene restored)");
@@ -202,6 +207,15 @@ void EditorLayer::stop() {
 void EditorLayer::togglePause() {
     if (m_State == PlayState::Playing) m_State = PlayState::Paused;
     else if (m_State == PlayState::Paused) m_State = PlayState::Playing;
+}
+
+void EditorLayer::captureGameMouse(bool capture) {
+    if (capture == m_GameCaptured) return;
+    m_GameCaptured = capture;
+    Input::setCursorLocked(capture);
+    // While captured ImGui ignores the mouse so the game owns it.
+    if (capture) ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+    else ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
 }
 
 // ---------------------------------------------------------------------------
@@ -693,7 +707,7 @@ void EditorLayer::drawPopups() {
         ImGui::BulletText("Scene view: RMB + WASD/QE fly, MMB pan, Alt+LMB orbit, wheel zoom, F frame");
         ImGui::BulletText("Tools: Q view, W move, E rotate, R scale, hold Ctrl to snap");
         ImGui::BulletText("Ctrl+P play/stop, Ctrl+S save, Ctrl+Z/Y undo/redo, Ctrl+D duplicate");
-        ImGui::BulletText("Game view: click to capture the mouse, Esc to release it");
+        ImGui::BulletText("Game view: click to capture the mouse, Esc opens the pause menu and releases it");
         ImGui::BulletText("Shaders hot-reload when their .glsl files change");
         if (ImGui::Button("Close", ImVec2(120, 0))) ImGui::CloseCurrentPopup();
         ImGui::EndPopup();

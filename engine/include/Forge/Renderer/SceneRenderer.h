@@ -31,6 +31,16 @@ struct RenderOptions {
     const LineBatch* gizmos = nullptr;   // extra lines (editor gizmos)
     std::vector<Entity> outline;         // entities drawn with a selection outline
     glm::vec4 outlineColor{1.0f, 0.55f, 0.1f, 1.0f};
+
+    // Quality switches, combined with the scene's Environment toggles
+    // (a feature renders only when both allow it).
+    bool shadows = true;
+    bool ambientOcclusion = true;
+    bool bloom = true;
+    bool antiAliasing = true;
+
+    // Options from the player's GameSettings (game views; the scene view keeps the defaults).
+    static RenderOptions fromSettings();
 };
 
 struct RenderStats {

@@ -2,6 +2,7 @@
 #include "Forge/Core/FileSystem.h"
 #include "Forge/Core/Input.h"
 #include "Forge/Core/Log.h"
+#include "Forge/Core/Settings.h"
 #include "Forge/Core/Time.h"
 #include "Forge/Scene/SceneSerializer.h"
 
@@ -26,7 +27,13 @@ void RuntimeLayer::onAttach() {
     m_Scene->beginPlay();
     Input::setEnabled(true);
     Input::setCursorLocked(true);
-    Application::get().setTitle(std::string(m_Game.name()) + " - Forge Engine");
+    Application& app = Application::get();
+    app.setTitle(std::string(m_Game.name()) + " - Forge Engine");
+    if (Settings::get().fullscreen) app.setFullscreen(true);
+    if (app.config().pauseMenu != PauseMenuStart::Closed) {
+        pause();
+        if (app.config().pauseMenu == PauseMenuStart::Settings) m_PauseMenu.openSettings();
+    }
 }
 
 void RuntimeLayer::onDetach() {
@@ -36,22 +43,39 @@ void RuntimeLayer::onDetach() {
     m_Scene.reset();
 }
 
+void RuntimeLayer::pause() {
+    if (m_Paused) return;
+    m_Paused = true;
+    m_PauseMenu.open();
+    Input::setCursorLocked(false);
+}
+
+void RuntimeLayer::resume() {
+    m_Paused = false;
+    m_PauseMenu.close();
+    Input::setCursorLocked(true);
+}
+
 void RuntimeLayer::onUpdate(float dt) {
-    if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-        m_Paused = !m_Paused;
-        Input::setCursorLocked(!m_Paused);
+    Application& app = Application::get();
+    if (!m_Paused && ImGui::IsKeyPressed(ImGuiKey_Escape, false)) pause();
+    // Alt-tabbing away pauses the game (but an unfocused start, e.g. automated screenshots, does not).
+    bool focused = app.windowFocused();
+    if (m_WasFocused && !focused && !m_Paused) pause();
+    m_WasFocused = focused;
+    if (ImGui::IsKeyPressed(ImGuiKey_F3, false)) {
+        Settings::get().showFps = !Settings::get().showFps;
+        Settings::save();
     }
-    if (ImGui::IsKeyPressed(ImGuiKey_F3, false)) m_ShowStats = !m_ShowStats;
     Input::setEnabled(!m_Paused);
 
     if (!m_Paused) m_Scene->update(dt * Time::timeScale());
 
-    glm::ivec2 fb = Application::get().framebufferSize();
+    glm::ivec2 fb = app.framebufferSize();
     if (fb.x <= 0 || fb.y <= 0) return;
     Entity cam = m_Scene->primaryCamera();
     CameraData camera = CameraData::fromEntity(*m_Scene, cam, (float)fb.x / (float)fb.y);
-    RenderOptions options;
-    m_Renderer->render(*m_Scene, camera, fb.x, fb.y, options);
+    m_Renderer->render(*m_Scene, camera, fb.x, fb.y, RenderOptions::fromSettings());
 }
 
 void RuntimeLayer::onImGui() {
@@ -62,10 +86,10 @@ void RuntimeLayer::onImGui() {
     Viewport vp;
     vp.position = glm::vec2(0.0f);
     vp.size = glm::vec2(io.DisplaySize.x, io.DisplaySize.y);
-    vp.drawList = ImGui::GetForegroundDrawList();
+    vp.drawList = bg; // behind every ImGui window, so the pause menu and stats stay on top of the HUD
     m_Game.onGUI(*m_Scene, vp);
 
-    if (m_ShowStats) {
+    if (Settings::get().showFps) {
         const RenderStats& s = m_Renderer->stats();
         ImGui::SetNextWindowPos(ImVec2(10, 10));
         ImGui::SetNextWindowBgAlpha(0.6f);
@@ -77,19 +101,21 @@ void RuntimeLayer::onImGui() {
     }
 
     if (m_Paused) {
-        ImDrawList* fg = ImGui::GetForegroundDrawList();
-        fg->AddRectFilled(ImVec2(0, 0), io.DisplaySize, IM_COL32(0, 0, 0, 140));
-        const char* title = "PAUSED";
-        ImFont* big = Application::get().fonts().large;
-        ImVec2 ts = big->CalcTextSizeA(big->FontSize, FLT_MAX, 0.0f, title);
-        fg->AddText(big, big->FontSize, ImVec2((io.DisplaySize.x - ts.x) * 0.5f, io.DisplaySize.y * 0.4f), IM_COL32_WHITE, title);
-        const char* hint = "Click to resume  -  Alt+F4 to quit  -  F3 stats";
-        ImVec2 hs = ImGui::CalcTextSize(hint);
-        fg->AddText(ImVec2((io.DisplaySize.x - hs.x) * 0.5f, io.DisplaySize.y * 0.4f + ts.y + 10), IM_COL32(220, 220, 220, 255), hint);
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-            m_Paused = false;
-            Input::setCursorLocked(true);
+        // A transparent full-window host for the menu widgets.
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetNextWindowSize(io.DisplaySize);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::Begin("##PauseHost", nullptr,
+                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoSavedSettings |
+                         ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove);
+        ImGui::PopStyleVar(2);
+        switch (m_PauseMenu.draw(vp, m_Game.name())) {
+        case PauseMenu::Action::Resume: resume(); break;
+        case PauseMenu::Action::Quit: Application::get().close(); break;
+        case PauseMenu::Action::None: break;
         }
+        ImGui::End();
     }
 }
 

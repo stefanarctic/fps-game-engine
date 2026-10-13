@@ -27,7 +27,7 @@
   },
   "entities": [
     {
-      "uuid": "29221c780d53d6e8",
+      "uuid": "cc37e0a6a31341bb",
       "name": "Directional Light",
       "tag": "Untagged",
       "active": true,
@@ -49,7 +49,7 @@
       }
     },
     {
-      "uuid": "e905818c63de0fa8",
+      "uuid": "120a1c3ffc771d9a",
       "name": "Level",
       "tag": "Untagged",
       "active": true,
@@ -63,11 +63,11 @@
       }
     },
     {
-      "uuid": "4a387410ba943d04",
+      "uuid": "ba78d1f835b27c4d",
       "name": "Floor",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, -0.5, 0],
@@ -90,11 +90,11 @@
       }
     },
     {
-      "uuid": "dac6e1acd863cb38",
+      "uuid": "94c6deaf76bc57c7",
       "name": "Walls",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -104,11 +104,11 @@
       }
     },
     {
-      "uuid": "14c4dc8476f3a0af",
+      "uuid": "d714bd5f15e0fd67",
       "name": "Wall North",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [0, 3, -30.5],
@@ -131,11 +131,11 @@
       }
     },
     {
-      "uuid": "7aa3bbd2362ee5ab",
+      "uuid": "1f754e54da0288d4",
       "name": "Wall South",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [0, 3, 30.5],
@@ -158,11 +158,11 @@
       }
     },
     {
-      "uuid": "f0535b9f645f1577",
+      "uuid": "7e37e8b98efb3e78",
       "name": "Wall East",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [30.5, 3, 0],
@@ -185,11 +185,11 @@
       }
     },
     {
-      "uuid": "eda9dcbf9bdb6f5e",
+      "uuid": "715d08b2b7f76355",
       "name": "Wall West",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [-30.5, 3, 0],
@@ -212,11 +212,11 @@
       }
     },
     {
-      "uuid": "96de6d888cbbc5c0",
+      "uuid": "6cdec7a2c50348c3",
       "name": "Strip North",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [0, 0.25, -29.9699993],
@@ -234,11 +234,11 @@
       }
     },
     {
-      "uuid": "c6966819cdc240c7",
+      "uuid": "aefecd9132580b74",
       "name": "Strip South",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [0, 0.25, 29.9699993],
@@ -256,11 +256,11 @@
       }
     },
     {
-      "uuid": "ac5aa1d18d503ad0",
+      "uuid": "a7d932b626a66417",
       "name": "Strip East",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [29.9699993, 0.25, 0],
@@ -278,11 +278,11 @@
       }
     },
     {
-      "uuid": "d62d280d4a72c0e1",
+      "uuid": "47c7111e0daa0005",
       "name": "Strip West",
       "tag": "Untagged",
       "active": true,
-      "parent": "dac6e1acd863cb38",
+      "parent": "94c6deaf76bc57c7",
       "components": {
         "Transform": {
           "Position": [-29.9699993, 0.25, 0],
@@ -300,11 +300,11 @@
       }
     },
     {
-      "uuid": "433a879b7efdc44b",
+      "uuid": "5bea2c355989b187",
       "name": "Center",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -314,11 +314,11 @@
       }
     },
     {
-      "uuid": "038499934418d20d",
+      "uuid": "8666a7cbb4e091e2",
       "name": "Platform",
       "tag": "Untagged",
       "active": true,
-      "parent": "433a879b7efdc44b",
+      "parent": "5bea2c355989b187",
       "components": {
         "Transform": {
           "Position": [0, 0.5, 0],
@@ -341,11 +341,11 @@
       }
     },
     {
-      "uuid": "514cd901da1a6931",
+      "uuid": "b34cced5fcf75e1d",
       "name": "Platform Trim",
       "tag": "Untagged",
       "active": true,
-      "parent": "433a879b7efdc44b",
+      "parent": "5bea2c355989b187",
       "components": {
         "Transform": {
           "Position": [0, 1.01999998, 0],
@@ -363,11 +363,11 @@
       }
     },
     {
-      "uuid": "74ece6ad63893512",
+      "uuid": "30475a7d324cf1a8",
       "name": "Monolith",
       "tag": "Untagged",
       "active": true,
-      "parent": "433a879b7efdc44b",
+      "parent": "5bea2c355989b187",
       "components": {
         "Transform": {
           "Position": [0, 3.5, 0],
@@ -390,11 +390,11 @@
       }
     },
     {
-      "uuid": "12d7f3875aeb6776",
+      "uuid": "3aceed1877881a19",
       "name": "Monolith Glow",
       "tag": "Untagged",
       "active": true,
-      "parent": "433a879b7efdc44b",
+      "parent": "5bea2c355989b187",
       "components": {
         "Transform": {
           "Position": [0, 3.5, 0],
@@ -412,11 +412,11 @@
       }
     },
     {
-      "uuid": "9147ebf1679cd90a",
+      "uuid": "1fd3cba964820c9e",
       "name": "Monolith Cap",
       "tag": "Untagged",
       "active": true,
-      "parent": "433a879b7efdc44b",
+      "parent": "5bea2c355989b187",
       "components": {
         "Transform": {
           "Position": [0, 6.05000019, 0],
@@ -439,11 +439,11 @@
       }
     },
     {
-      "uuid": "4d1aacd21df7e196",
+      "uuid": "34ed59c19ea96013",
       "name": "Monolith Light",
       "tag": "Untagged",
       "active": true,
-      "parent": "433a879b7efdc44b",
+      "parent": "5bea2c355989b187",
       "components": {
         "Transform": {
           "Position": [0, 3.5, 2.20000005],
@@ -461,11 +461,11 @@
       }
     },
     {
-      "uuid": "128c7ca8a2515d81",
+      "uuid": "52c1cde246e45d4d",
       "name": "Bunkers",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -475,11 +475,11 @@
       }
     },
     {
-      "uuid": "bc45a44b6da6e800",
+      "uuid": "d287c9de48de7d32",
       "name": "Bunker 1",
       "tag": "Untagged",
       "active": true,
-      "parent": "128c7ca8a2515d81",
+      "parent": "52c1cde246e45d4d",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -489,11 +489,11 @@
       }
     },
     {
-      "uuid": "99284cf82ffa4975",
+      "uuid": "3796374f4b174d77",
       "name": "Wall A",
       "tag": "Untagged",
       "active": true,
-      "parent": "bc45a44b6da6e800",
+      "parent": "d287c9de48de7d32",
       "components": {
         "Transform": {
           "Position": [-18, 0.699999988, -18],
@@ -516,11 +516,11 @@
       }
     },
     {
-      "uuid": "83c926f75e77ec60",
+      "uuid": "c0c2f940cfb82ac5",
       "name": "Wall B",
       "tag": "Untagged",
       "active": true,
-      "parent": "bc45a44b6da6e800",
+      "parent": "d287c9de48de7d32",
       "components": {
         "Transform": {
           "Position": [-15.8000002, 0.699999988, -16],
@@ -543,11 +543,11 @@
       }
     },
     {
-      "uuid": "3e3b004e71175d1f",
+      "uuid": "91b64fa4b159a130",
       "name": "Cap A",
       "tag": "Untagged",
       "active": true,
-      "parent": "bc45a44b6da6e800",
+      "parent": "d287c9de48de7d32",
       "components": {
         "Transform": {
           "Position": [-18, 1.42999995, -18],
@@ -565,11 +565,11 @@
       }
     },
     {
-      "uuid": "2f7037d1278172e1",
+      "uuid": "02995320ebfaf768",
       "name": "Cap B",
       "tag": "Untagged",
       "active": true,
-      "parent": "bc45a44b6da6e800",
+      "parent": "d287c9de48de7d32",
       "components": {
         "Transform": {
           "Position": [-15.8000002, 1.42999995, -16],
@@ -587,11 +587,11 @@
       }
     },
     {
-      "uuid": "7a33f0e28a52f469",
+      "uuid": "5f48f10da2f7c6d4",
       "name": "Bunker 2",
       "tag": "Untagged",
       "active": true,
-      "parent": "128c7ca8a2515d81",
+      "parent": "52c1cde246e45d4d",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -601,11 +601,11 @@
       }
     },
     {
-      "uuid": "8bbcc0e4f10edf98",
+      "uuid": "80125dcf11035737",
       "name": "Wall A",
       "tag": "Untagged",
       "active": true,
-      "parent": "7a33f0e28a52f469",
+      "parent": "5f48f10da2f7c6d4",
       "components": {
         "Transform": {
           "Position": [18, 0.699999988, -18],
@@ -628,11 +628,11 @@
       }
     },
     {
-      "uuid": "0384282826597ae9",
+      "uuid": "bddb082325da8df8",
       "name": "Wall B",
       "tag": "Untagged",
       "active": true,
-      "parent": "7a33f0e28a52f469",
+      "parent": "5f48f10da2f7c6d4",
       "components": {
         "Transform": {
           "Position": [15.8000002, 0.699999988, -16],
@@ -655,11 +655,11 @@
       }
     },
     {
-      "uuid": "b38845a45577de56",
+      "uuid": "2493015cd0fc6519",
       "name": "Cap A",
       "tag": "Untagged",
       "active": true,
-      "parent": "7a33f0e28a52f469",
+      "parent": "5f48f10da2f7c6d4",
       "components": {
         "Transform": {
           "Position": [18, 1.42999995, -18],
@@ -677,11 +677,11 @@
       }
     },
     {
-      "uuid": "6108020bab271bd0",
+      "uuid": "32022aed5c457936",
       "name": "Cap B",
       "tag": "Untagged",
       "active": true,
-      "parent": "7a33f0e28a52f469",
+      "parent": "5f48f10da2f7c6d4",
       "components": {
         "Transform": {
           "Position": [15.8000002, 1.42999995, -16],
@@ -699,11 +699,11 @@
       }
     },
     {
-      "uuid": "8e27465bf6845b9c",
+      "uuid": "5e10fbaecd6611c4",
       "name": "Bunker 3",
       "tag": "Untagged",
       "active": true,
-      "parent": "128c7ca8a2515d81",
+      "parent": "52c1cde246e45d4d",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -713,11 +713,11 @@
       }
     },
     {
-      "uuid": "e233f98c0f7d14e8",
+      "uuid": "74a5a3a89f822088",
       "name": "Wall A",
       "tag": "Untagged",
       "active": true,
-      "parent": "8e27465bf6845b9c",
+      "parent": "5e10fbaecd6611c4",
       "components": {
         "Transform": {
           "Position": [-18, 0.699999988, 18],
@@ -740,11 +740,11 @@
       }
     },
     {
-      "uuid": "99e0be1cd4acd70f",
+      "uuid": "c70b3874e59bbdff",
       "name": "Wall B",
       "tag": "Untagged",
       "active": true,
-      "parent": "8e27465bf6845b9c",
+      "parent": "5e10fbaecd6611c4",
       "components": {
         "Transform": {
           "Position": [-15.8000002, 0.699999988, 16],
@@ -767,11 +767,11 @@
       }
     },
     {
-      "uuid": "d4278d3079032912",
+      "uuid": "9b1d58ba101c1b46",
       "name": "Cap A",
       "tag": "Untagged",
       "active": true,
-      "parent": "8e27465bf6845b9c",
+      "parent": "5e10fbaecd6611c4",
       "components": {
         "Transform": {
           "Position": [-18, 1.42999995, 18],
@@ -789,11 +789,11 @@
       }
     },
     {
-      "uuid": "757ea8562be84696",
+      "uuid": "f5bcb61516a868ef",
       "name": "Cap B",
       "tag": "Untagged",
       "active": true,
-      "parent": "8e27465bf6845b9c",
+      "parent": "5e10fbaecd6611c4",
       "components": {
         "Transform": {
           "Position": [-15.8000002, 1.42999995, 16],
@@ -811,11 +811,11 @@
       }
     },
     {
-      "uuid": "14f274e956d16ec2",
+      "uuid": "b9676701c61218f5",
       "name": "Bunker 4",
       "tag": "Untagged",
       "active": true,
-      "parent": "128c7ca8a2515d81",
+      "parent": "52c1cde246e45d4d",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -825,11 +825,11 @@
       }
     },
     {
-      "uuid": "f11155d49305ab5e",
+      "uuid": "77795dd0ac1b1731",
       "name": "Wall A",
       "tag": "Untagged",
       "active": true,
-      "parent": "14f274e956d16ec2",
+      "parent": "b9676701c61218f5",
       "components": {
         "Transform": {
           "Position": [18, 0.699999988, 18],
@@ -852,11 +852,11 @@
       }
     },
     {
-      "uuid": "e6479315338abfb8",
+      "uuid": "384d6dfbfc757e7b",
       "name": "Wall B",
       "tag": "Untagged",
       "active": true,
-      "parent": "14f274e956d16ec2",
+      "parent": "b9676701c61218f5",
       "components": {
         "Transform": {
           "Position": [15.8000002, 0.699999988, 16],
@@ -879,11 +879,11 @@
       }
     },
     {
-      "uuid": "81e06f437a63ff5a",
+      "uuid": "f7f837546a9a8c4e",
       "name": "Cap A",
       "tag": "Untagged",
       "active": true,
-      "parent": "14f274e956d16ec2",
+      "parent": "b9676701c61218f5",
       "components": {
         "Transform": {
           "Position": [18, 1.42999995, 18],
@@ -901,11 +901,11 @@
       }
     },
     {
-      "uuid": "407f8ce4f2557492",
+      "uuid": "3f33b0009c9f2d94",
       "name": "Cap B",
       "tag": "Untagged",
       "active": true,
-      "parent": "14f274e956d16ec2",
+      "parent": "b9676701c61218f5",
       "components": {
         "Transform": {
           "Position": [15.8000002, 1.42999995, 16],
@@ -923,11 +923,11 @@
       }
     },
     {
-      "uuid": "f884a524cb33d1a7",
+      "uuid": "a85399b40dd0ed6e",
       "name": "Pillars",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -937,11 +937,11 @@
       }
     },
     {
-      "uuid": "9a2d782c287b4f1f",
+      "uuid": "46fe0beaf7ab9c88",
       "name": "Pillar",
       "tag": "Untagged",
       "active": true,
-      "parent": "f884a524cb33d1a7",
+      "parent": "a85399b40dd0ed6e",
       "components": {
         "Transform": {
           "Position": [-11, 0, -11],
@@ -964,11 +964,11 @@
       }
     },
     {
-      "uuid": "1c1873e38853e195",
+      "uuid": "db028c46e2ad390b",
       "name": "Lamp",
       "tag": "Untagged",
       "active": true,
-      "parent": "9a2d782c287b4f1f",
+      "parent": "46fe0beaf7ab9c88",
       "components": {
         "Transform": {
           "Position": [0, 4.75, 0],
@@ -986,11 +986,11 @@
       }
     },
     {
-      "uuid": "0692c9a84ea1d809",
+      "uuid": "0461ddf64cd5ed76",
       "name": "Lamp Light",
       "tag": "Untagged",
       "active": true,
-      "parent": "9a2d782c287b4f1f",
+      "parent": "46fe0beaf7ab9c88",
       "components": {
         "Transform": {
           "Position": [0, 4.69999981, 0],
@@ -1008,11 +1008,11 @@
       }
     },
     {
-      "uuid": "69e017b574753cb0",
+      "uuid": "ab9e5418cdca1b9e",
       "name": "Pillar",
       "tag": "Untagged",
       "active": true,
-      "parent": "f884a524cb33d1a7",
+      "parent": "a85399b40dd0ed6e",
       "components": {
         "Transform": {
           "Position": [11, 0, -11],
@@ -1035,11 +1035,11 @@
       }
     },
     {
-      "uuid": "2f73c0e83b23b563",
+      "uuid": "db91b632608ec7f5",
       "name": "Lamp",
       "tag": "Untagged",
       "active": true,
-      "parent": "69e017b574753cb0",
+      "parent": "ab9e5418cdca1b9e",
       "components": {
         "Transform": {
           "Position": [0, 4.75, 0],
@@ -1057,11 +1057,11 @@
       }
     },
     {
-      "uuid": "030833556f36fd7b",
+      "uuid": "352851af98e200cf",
       "name": "Lamp Light",
       "tag": "Untagged",
       "active": true,
-      "parent": "69e017b574753cb0",
+      "parent": "ab9e5418cdca1b9e",
       "components": {
         "Transform": {
           "Position": [0, 4.69999981, 0],
@@ -1079,11 +1079,11 @@
       }
     },
     {
-      "uuid": "9ef99ea41438c04c",
+      "uuid": "93c98dd492f05c7c",
       "name": "Pillar",
       "tag": "Untagged",
       "active": true,
-      "parent": "f884a524cb33d1a7",
+      "parent": "a85399b40dd0ed6e",
       "components": {
         "Transform": {
           "Position": [-11, 0, 11],
@@ -1106,11 +1106,11 @@
       }
     },
     {
-      "uuid": "4d0cebd1cadf2185",
+      "uuid": "191a341afc29f951",
       "name": "Lamp",
       "tag": "Untagged",
       "active": true,
-      "parent": "9ef99ea41438c04c",
+      "parent": "93c98dd492f05c7c",
       "components": {
         "Transform": {
           "Position": [0, 4.75, 0],
@@ -1128,11 +1128,11 @@
       }
     },
     {
-      "uuid": "3a16d2f6e95b7fa0",
+      "uuid": "ec5b852a7ff6d734",
       "name": "Lamp Light",
       "tag": "Untagged",
       "active": true,
-      "parent": "9ef99ea41438c04c",
+      "parent": "93c98dd492f05c7c",
       "components": {
         "Transform": {
           "Position": [0, 4.69999981, 0],
@@ -1150,11 +1150,11 @@
       }
     },
     {
-      "uuid": "8773d84c2cabc573",
+      "uuid": "959727301003a7a9",
       "name": "Pillar",
       "tag": "Untagged",
       "active": true,
-      "parent": "f884a524cb33d1a7",
+      "parent": "a85399b40dd0ed6e",
       "components": {
         "Transform": {
           "Position": [11, 0, 11],
@@ -1177,11 +1177,11 @@
       }
     },
     {
-      "uuid": "ad8dd2bf3a44e29d",
+      "uuid": "1d21543afb1b465f",
       "name": "Lamp",
       "tag": "Untagged",
       "active": true,
-      "parent": "8773d84c2cabc573",
+      "parent": "959727301003a7a9",
       "components": {
         "Transform": {
           "Position": [0, 4.75, 0],
@@ -1199,11 +1199,11 @@
       }
     },
     {
-      "uuid": "8d866d039a24c170",
+      "uuid": "6204fc82329a8f27",
       "name": "Lamp Light",
       "tag": "Untagged",
       "active": true,
-      "parent": "8773d84c2cabc573",
+      "parent": "959727301003a7a9",
       "components": {
         "Transform": {
           "Position": [0, 4.69999981, 0],
@@ -1221,11 +1221,11 @@
       }
     },
     {
-      "uuid": "61ed9a72b92263f1",
+      "uuid": "eded1178a6c5efe7",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -1235,11 +1235,11 @@
       }
     },
     {
-      "uuid": "d8a68842655b80a2",
+      "uuid": "0bc67e6f57ba53d3",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [-6, 0.600000024, 12],
@@ -1262,11 +1262,11 @@
       }
     },
     {
-      "uuid": "5c62eab9ab6cc59c",
+      "uuid": "74028e02813bc6dd",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [7, 0.600000024, 14],
@@ -1289,11 +1289,11 @@
       }
     },
     {
-      "uuid": "caef742de932f378",
+      "uuid": "1c72a282f697215e",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [-8, 0.600000024, -13],
@@ -1316,11 +1316,11 @@
       }
     },
     {
-      "uuid": "5fde18a0738dba1f",
+      "uuid": "93984d67a5401dba",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [6, 0.600000024, -12],
@@ -1343,11 +1343,11 @@
       }
     },
     {
-      "uuid": "1ae55988c88ab381",
+      "uuid": "eaa25c6c44c44541",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [-22, 0.600000024, 0],
@@ -1370,11 +1370,11 @@
       }
     },
     {
-      "uuid": "e8daad2133bc703a",
+      "uuid": "c2b88be4ff5a32a4",
       "name": "Cover",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [22, 0.600000024, 2],
@@ -1397,11 +1397,11 @@
       }
     },
     {
-      "uuid": "6e967d0af22c3b7b",
+      "uuid": "6849d3b28ce4de10",
       "name": "Step",
       "tag": "Untagged",
       "active": true,
-      "parent": "61ed9a72b92263f1",
+      "parent": "eded1178a6c5efe7",
       "components": {
         "Transform": {
           "Position": [0, 0.25, 5.5999999],
@@ -1424,11 +1424,11 @@
       }
     },
     {
-      "uuid": "00f8bd8ef073e170",
+      "uuid": "4560c9e47577632c",
       "name": "Props",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [0, 0, 0],
@@ -1438,11 +1438,11 @@
       }
     },
     {
-      "uuid": "ca0d4998dd9e5679",
+      "uuid": "26420542f0e57856",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-14, 0, 4],
@@ -1465,11 +1465,11 @@
       }
     },
     {
-      "uuid": "381f4c3908785d6f",
+      "uuid": "2c49eeca1cd79bb5",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-14, 1, 4],
@@ -1499,11 +1499,11 @@
       }
     },
     {
-      "uuid": "119e93c041cc43ea",
+      "uuid": "50d4a7d89b1372e4",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-12.8000002, 0, 4.4000001],
@@ -1526,11 +1526,11 @@
       }
     },
     {
-      "uuid": "b496c8a4db4f3ba9",
+      "uuid": "44bfea02d8cac72d",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [14, 0, -4],
@@ -1553,11 +1553,11 @@
       }
     },
     {
-      "uuid": "c4c32e666a59e94c",
+      "uuid": "f8a6820df87c3972",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [15.1000004, 0, -4.19999981],
@@ -1587,11 +1587,11 @@
       }
     },
     {
-      "uuid": "185a55ca4dce306a",
+      "uuid": "8f5582d3901a69f5",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [14.5, 1, -4.0999999],
@@ -1621,11 +1621,11 @@
       }
     },
     {
-      "uuid": "4634a2b26b9559db",
+      "uuid": "6648a6c0e715f6e4",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [4, 0, 20],
@@ -1655,11 +1655,11 @@
       }
     },
     {
-      "uuid": "f56a830911f5d142",
+      "uuid": "00a3b2e2e5095496",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-3, 0, -22],
@@ -1682,11 +1682,11 @@
       }
     },
     {
-      "uuid": "770aeea48debe216",
+      "uuid": "bdba853fea146883",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-3, 1, -22],
@@ -1716,11 +1716,11 @@
       }
     },
     {
-      "uuid": "285e535805dcd6e2",
+      "uuid": "43c7295d2f770884",
       "name": "Crate",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [24, 0, 22],
@@ -1750,11 +1750,11 @@
       }
     },
     {
-      "uuid": "01819102fee0ea97",
-      "name": "Barrel",
+      "uuid": "c0e94d76cd16f13c",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-16, 0, 6],
@@ -1773,15 +1773,68 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "0f700a9370487cb8"
         }
       }
     },
     {
-      "uuid": "0411c47ba4c67fe1",
-      "name": "Barrel",
+      "uuid": "0f700a9370487cb8",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "c0e94d76cd16f13c",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "caa5d075d259ab8e",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-15.1999998, 0, 6.80000019],
@@ -1800,15 +1853,68 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "3120303c9710f933"
         }
       }
     },
     {
-      "uuid": "6bef12bf28c94e7a",
-      "name": "Barrel",
+      "uuid": "3120303c9710f933",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "caa5d075d259ab8e",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "b89d22ed68ba08c6",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [16, 0, -6.5],
@@ -1827,15 +1933,68 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "f244a87920d3267b"
         }
       }
     },
     {
-      "uuid": "7a7993723e473f5e",
-      "name": "Barrel",
+      "uuid": "f244a87920d3267b",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "b89d22ed68ba08c6",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "b4a1945e40101120",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [9, 0, 20],
@@ -1854,15 +2013,68 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "086593edf75585c7"
         }
       }
     },
     {
-      "uuid": "64aeec7f8a46a01e",
-      "name": "Barrel",
+      "uuid": "086593edf75585c7",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "b4a1945e40101120",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "e7238f4c9fe015ba",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-25, 0, -25],
@@ -1881,15 +2093,68 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "191a96c72d28a8ff"
         }
       }
     },
     {
-      "uuid": "24db4948b40e50f0",
-      "name": "Barrel",
+      "uuid": "191a96c72d28a8ff",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "e7238f4c9fe015ba",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "4e99ef34d26022ea",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [25, 0, -25],
@@ -1908,15 +2173,68 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "d770ac42048c2a17"
         }
       }
     },
     {
-      "uuid": "fcf59afc5bb35953",
-      "name": "Barrel",
+      "uuid": "d770ac42048c2a17",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "4e99ef34d26022ea",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "1b5db50a3f6c4399",
+      "name": "Explosive Barrel",
       "tag": "Untagged",
       "active": true,
-      "parent": "00f8bd8ef073e170",
+      "parent": "4560c9e47577632c",
       "components": {
         "Transform": {
           "Position": [-26, 0, 20],
@@ -1935,15 +2253,468 @@
           "Center": [0, 0.600000024, 0],
           "Size": [0.800000012, 1.20000005, 0.800000012],
           "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "f910f2cf2b203849"
         }
       }
     },
     {
-      "uuid": "87d9930d767ea61a",
+      "uuid": "f910f2cf2b203849",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "1b5db50a3f6c4399",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "9c640766bc183e70",
+      "name": "Explosive Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "4560c9e47577632c",
+      "components": {
+        "Transform": {
+          "Position": [8.5, 0, 5.5],
+          "Rotation": [0, 203.818054, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "4ace69d877d6c7d5"
+        }
+      }
+    },
+    {
+      "uuid": "4ace69d877d6c7d5",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "9c640766bc183e70",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "089245021a48d151",
+      "name": "Explosive Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "4560c9e47577632c",
+      "components": {
+        "Transform": {
+          "Position": [9.39999962, 0, 6.0999999],
+          "Rotation": [0, 261.533539, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "aaf07971b51dbff2"
+        }
+      }
+    },
+    {
+      "uuid": "aaf07971b51dbff2",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "089245021a48d151",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "63132e4c86414ee5",
+      "name": "Explosive Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "4560c9e47577632c",
+      "components": {
+        "Transform": {
+          "Position": [8.69999981, 0, 6.5999999],
+          "Rotation": [0, 89.4573364, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "82700218ff7ee5cb"
+        }
+      }
+    },
+    {
+      "uuid": "82700218ff7ee5cb",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "63132e4c86414ee5",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "b2a4cea7a9baf347",
+      "name": "Explosive Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "4560c9e47577632c",
+      "components": {
+        "Transform": {
+          "Position": [-8, 0, -6],
+          "Rotation": [0, 250.536545, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "cfbb5f7ca3904d6f"
+        }
+      }
+    },
+    {
+      "uuid": "cfbb5f7ca3904d6f",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "b2a4cea7a9baf347",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "c355670a7513bb5b",
+      "name": "Explosive Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "4560c9e47577632c",
+      "components": {
+        "Transform": {
+          "Position": [-8.89999962, 0, -6.4000001],
+          "Rotation": [0, 283.22937, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        },
+        "Health": {
+          "Current": 40,
+          "Max": 40
+        },
+        "Explosive": {
+          "Radius": 5.5,
+          "Damage": 120,
+          "Force": 14,
+          "Ignite Below": 0.600000024,
+          "Burn Rate": 22,
+          "Respawn Time": 40,
+          "Fire": "28ce74002d7fbf30"
+        }
+      }
+    },
+    {
+      "uuid": "28ce74002d7fbf30",
+      "name": "Fire",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "c355670a7513bb5b",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.22000003, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Particle System": {
+          "Emitting": true,
+          "Looping": true,
+          "Blend": "Additive",
+          "Rate": 45,
+          "Burst": 0,
+          "Max Particles": 256,
+          "Lifetime": 0.550000012,
+          "Start Speed": 1.79999995,
+          "Spread": 0.219999999,
+          "Direction": [0, 1, 0],
+          "Gravity": -0.0500000007,
+          "Drag": 0,
+          "Start Size": 0.379999995,
+          "End Size": 0.0500000007,
+          "Start Color": [3.5, 1.39999998, 0.349999994, 0.899999976],
+          "End Color": [1, 0.200000003, 0.0500000007, 0]
+        }
+      }
+    },
+    {
+      "uuid": "6a4fe3d178e329b5",
       "name": "Weapon Display",
       "tag": "Untagged",
       "active": true,
-      "parent": "e905818c63de0fa8",
+      "parent": "120a1c3ffc771d9a",
       "components": {
         "Transform": {
           "Position": [-4, 0, 25],
@@ -1953,11 +2724,11 @@
       }
     },
     {
-      "uuid": "0be82b711700edd0",
+      "uuid": "e874e5eeec9863bb",
       "name": "Pedestal",
       "tag": "Untagged",
       "active": true,
-      "parent": "87d9930d767ea61a",
+      "parent": "6a4fe3d178e329b5",
       "components": {
         "Transform": {
           "Position": [0, 0.5, 0],
@@ -1980,11 +2751,11 @@
       }
     },
     {
-      "uuid": "16592fd2eed9292a",
+      "uuid": "0e776bf2d6b702be",
       "name": "Rifle Showcase",
       "tag": "Untagged",
       "active": true,
-      "parent": "87d9930d767ea61a",
+      "parent": "6a4fe3d178e329b5",
       "components": {
         "Transform": {
           "Position": [0, 1.45000005, 0],
@@ -2007,11 +2778,11 @@
       }
     },
     {
-      "uuid": "e8cbfcaebcafe09f",
+      "uuid": "4cb45a487685a29e",
       "name": "Display Light",
       "tag": "Untagged",
       "active": true,
-      "parent": "87d9930d767ea61a",
+      "parent": "6a4fe3d178e329b5",
       "components": {
         "Transform": {
           "Position": [0, 2.5999999, 0.600000024],
@@ -2029,11 +2800,11 @@
       }
     },
     {
-      "uuid": "6b5138126185e708",
+      "uuid": "8cc3bcdb765b18bc",
       "name": "Drone Showcase",
       "tag": "Untagged",
       "active": true,
-      "parent": "87d9930d767ea61a",
+      "parent": "6a4fe3d178e329b5",
       "components": {
         "Transform": {
           "Position": [2.5, 1.60000002, 0],
@@ -2056,7 +2827,7 @@
       }
     },
     {
-      "uuid": "a2f1218425216ef4",
+      "uuid": "c82abbba634b7047",
       "name": "Spawn Points",
       "tag": "Untagged",
       "active": true,
@@ -2070,11 +2841,11 @@
       }
     },
     {
-      "uuid": "fa21a6045cb01838",
+      "uuid": "f26b50fffe0905aa",
       "name": "Spawn 1",
       "tag": "Untagged",
       "active": true,
-      "parent": "a2f1218425216ef4",
+      "parent": "c82abbba634b7047",
       "components": {
         "Transform": {
           "Position": [-24, 3, -24],
@@ -2087,11 +2858,11 @@
       }
     },
     {
-      "uuid": "abe413c7cec79c21",
+      "uuid": "1aa17eb06ad62075",
       "name": "Spawn 2",
       "tag": "Untagged",
       "active": true,
-      "parent": "a2f1218425216ef4",
+      "parent": "c82abbba634b7047",
       "components": {
         "Transform": {
           "Position": [24, 3, -24],
@@ -2104,11 +2875,11 @@
       }
     },
     {
-      "uuid": "fcfab2bcdb247288",
+      "uuid": "931616803cdc6da6",
       "name": "Spawn 3",
       "tag": "Untagged",
       "active": true,
-      "parent": "a2f1218425216ef4",
+      "parent": "c82abbba634b7047",
       "components": {
         "Transform": {
           "Position": [0, 3.5, -26],
@@ -2121,11 +2892,11 @@
       }
     },
     {
-      "uuid": "d7632e881c1abfdf",
+      "uuid": "00bc7d5036745317",
       "name": "Spawn 4",
       "tag": "Untagged",
       "active": true,
-      "parent": "a2f1218425216ef4",
+      "parent": "c82abbba634b7047",
       "components": {
         "Transform": {
           "Position": [-26, 3, -2],
@@ -2138,11 +2909,11 @@
       }
     },
     {
-      "uuid": "2e9f90191b0dc112",
+      "uuid": "df5c63a7af2421c8",
       "name": "Spawn 5",
       "tag": "Untagged",
       "active": true,
-      "parent": "a2f1218425216ef4",
+      "parent": "c82abbba634b7047",
       "components": {
         "Transform": {
           "Position": [26, 3, -2],
@@ -2155,11 +2926,11 @@
       }
     },
     {
-      "uuid": "5ae89379aed1c808",
+      "uuid": "1417c151f09dc024",
       "name": "Spawn 6",
       "tag": "Untagged",
       "active": true,
-      "parent": "a2f1218425216ef4",
+      "parent": "c82abbba634b7047",
       "components": {
         "Transform": {
           "Position": [0, 8, 0],
@@ -2172,7 +2943,7 @@
       }
     },
     {
-      "uuid": "b925ee71a7497d5d",
+      "uuid": "071e357f91aa9766",
       "name": "Pickups",
       "tag": "Untagged",
       "active": true,
@@ -2186,11 +2957,11 @@
       }
     },
     {
-      "uuid": "e3bdbd43e981e3f7",
+      "uuid": "70f7fddd3902ab22",
       "name": "Health Pack",
       "tag": "Untagged",
       "active": true,
-      "parent": "b925ee71a7497d5d",
+      "parent": "071e357f91aa9766",
       "components": {
         "Transform": {
           "Position": [-20, 0.800000012, 10],
@@ -2226,11 +2997,11 @@
       }
     },
     {
-      "uuid": "b44287a556d4413f",
+      "uuid": "f4515cfcb07fe868",
       "name": "Health Pack",
       "tag": "Untagged",
       "active": true,
-      "parent": "b925ee71a7497d5d",
+      "parent": "071e357f91aa9766",
       "components": {
         "Transform": {
           "Position": [20, 0.800000012, -10],
@@ -2266,11 +3037,11 @@
       }
     },
     {
-      "uuid": "6c11dccc008cf229",
+      "uuid": "8d06921c65a845f6",
       "name": "Ammo Box",
       "tag": "Untagged",
       "active": true,
-      "parent": "b925ee71a7497d5d",
+      "parent": "071e357f91aa9766",
       "components": {
         "Transform": {
           "Position": [20, 0.800000012, 10],
@@ -2295,7 +3066,7 @@
         },
         "Pickup": {
           "Type": "Ammo",
-          "Amount": 60,
+          "Amount": 1,
           "Respawn Time": 15
         },
         "Spinner": {
@@ -2306,11 +3077,11 @@
       }
     },
     {
-      "uuid": "cd94b9bb73b4036e",
+      "uuid": "ef552fe18b91561f",
       "name": "Ammo Box",
       "tag": "Untagged",
       "active": true,
-      "parent": "b925ee71a7497d5d",
+      "parent": "071e357f91aa9766",
       "components": {
         "Transform": {
           "Position": [-20, 0.800000012, -10],
@@ -2335,7 +3106,7 @@
         },
         "Pickup": {
           "Type": "Ammo",
-          "Amount": 60,
+          "Amount": 1,
           "Respawn Time": 15
         },
         "Spinner": {
@@ -2346,11 +3117,11 @@
       }
     },
     {
-      "uuid": "96c62701ed015308",
+      "uuid": "4b27c691ed536d42",
       "name": "Health Pack",
       "tag": "Untagged",
       "active": true,
-      "parent": "b925ee71a7497d5d",
+      "parent": "071e357f91aa9766",
       "components": {
         "Transform": {
           "Position": [0, 1.79999995, 3.4000001],
@@ -2386,7 +3157,7 @@
       }
     },
     {
-      "uuid": "c849e3a00bcda908",
+      "uuid": "fabfa6bf822fc5f6",
       "name": "Game Manager",
       "tag": "Untagged",
       "active": true,
@@ -2406,7 +3177,7 @@
       }
     },
     {
-      "uuid": "d01dc515156a4122",
+      "uuid": "bcec1dbee9068dd3",
       "name": "Player",
       "tag": "Player",
       "active": true,
@@ -2432,8 +3203,9 @@
           "Jump Speed": 7.5,
           "Mouse Sensitivity": 0.119999997,
           "Eye Height": 0.699999988,
-          "Camera": "01fe77563ebe2d7a",
-          "Weapon": "3b301b52333822fc"
+          "Aim Move Multiplier": 0.600000024,
+          "Camera": "1e98451ae626674b",
+          "Weapon": "c0e522c83748f2ee"
         },
         "Health": {
           "Current": 100,
@@ -2442,11 +3214,11 @@
       }
     },
     {
-      "uuid": "01fe77563ebe2d7a",
+      "uuid": "1e98451ae626674b",
       "name": "Main Camera",
       "tag": "MainCamera",
       "active": true,
-      "parent": "d01dc515156a4122",
+      "parent": "bcec1dbee9068dd3",
       "components": {
         "Transform": {
           "Position": [0, 0.699999988, 0],
@@ -2464,11 +3236,11 @@
       }
     },
     {
-      "uuid": "3b301b52333822fc",
-      "name": "Rifle",
+      "uuid": "c0e522c83748f2ee",
+      "name": "Assault Rifle",
       "tag": "Untagged",
       "active": true,
-      "parent": "01fe77563ebe2d7a",
+      "parent": "1e98451ae626674b",
       "components": {
         "Transform": {
           "Position": [0.159999996, -0.150000006, -0.5],
@@ -2484,7 +3256,11 @@
           "Layer": "Viewmodel"
         },
         "Weapon": {
+          "Slot": 1,
+          "Kind": "Hitscan",
+          "Automatic": true,
           "Damage": 22,
+          "Pellets": 1,
           "Fire Rate": 9,
           "Range": 200,
           "Spread": 0.600000024,
@@ -2492,22 +3268,272 @@
           "Magazine Size": 30,
           "Ammo": 30,
           "Reserve Ammo": 150,
+          "Max Reserve": 300,
+          "Ammo Per Pickup": 60,
           "Reload Time": 1.5,
+          "Equip Time": 0.349999994,
           "Impact Force": 7,
-          "Muzzle Flash": "affbabbb43b5a7e3",
+          "Aim FOV": 50,
+          "Aim Position": [0, -0.0694399998, -0.330000013],
+          "Aim Speed": 10,
+          "Aim Spread": 0.300000012,
+          "Scope": false,
+          "Projectile Speed": 32,
+          "Explosion Radius": 5,
+          "Muzzle Flash": "5bd0d7284ee88426",
           "Rest Position": [0.159999996, -0.150000006, -0.5]
         }
       }
     },
     {
-      "uuid": "affbabbb43b5a7e3",
+      "uuid": "5bd0d7284ee88426",
       "name": "Muzzle Flash",
       "tag": "Untagged",
       "active": true,
-      "parent": "3b301b52333822fc",
+      "parent": "c0e522c83748f2ee",
       "components": {
         "Transform": {
           "Position": [0, 0.0450000018, -0.800000012],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/muzzleflash.obj",
+          "Material": "materials/MuzzleFlash.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": false,
+          "Layer": "Viewmodel"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.75, 0.400000006],
+          "Intensity": 0,
+          "Range": 7,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "24c7461fa3e3070f",
+      "name": "Shotgun",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "1e98451ae626674b",
+      "components": {
+        "Transform": {
+          "Position": [0.170000002, -0.159999996, -0.479999989],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.620000005, 0.620000005, 0.620000005]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/shotgun.glb",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "Viewmodel"
+        },
+        "Weapon": {
+          "Slot": 2,
+          "Kind": "Hitscan",
+          "Automatic": false,
+          "Damage": 12,
+          "Pellets": 9,
+          "Fire Rate": 1.25,
+          "Range": 45,
+          "Spread": 5,
+          "Recoil": 4.5,
+          "Magazine Size": 8,
+          "Ammo": 8,
+          "Reserve Ammo": 32,
+          "Max Reserve": 64,
+          "Ammo Per Pickup": 16,
+          "Reload Time": 2,
+          "Equip Time": 0.349999994,
+          "Impact Force": 3,
+          "Aim FOV": 60,
+          "Aim Position": [0, -0.0313099995, -0.25],
+          "Aim Speed": 10,
+          "Aim Spread": 0.649999976,
+          "Scope": false,
+          "Projectile Speed": 32,
+          "Explosion Radius": 5,
+          "Muzzle Flash": "b88ff1a792e5fcf7",
+          "Rest Position": [0.170000002, -0.159999996, -0.479999989]
+        }
+      }
+    },
+    {
+      "uuid": "b88ff1a792e5fcf7",
+      "name": "Muzzle Flash",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "24c7461fa3e3070f",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.0250000004, -0.699999988],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/muzzleflash.obj",
+          "Material": "materials/MuzzleFlash.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": false,
+          "Layer": "Viewmodel"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.75, 0.400000006],
+          "Intensity": 0,
+          "Range": 7,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "85b84a3c06f45d1b",
+      "name": "Sniper Rifle",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "1e98451ae626674b",
+      "components": {
+        "Transform": {
+          "Position": [0.150000006, -0.150000006, -0.479999989],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.600000024, 0.600000024, 0.600000024]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/sniper.glb",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "Viewmodel"
+        },
+        "Weapon": {
+          "Slot": 3,
+          "Kind": "Hitscan",
+          "Automatic": false,
+          "Damage": 150,
+          "Pellets": 1,
+          "Fire Rate": 0.75,
+          "Range": 400,
+          "Spread": 4,
+          "Recoil": 5,
+          "Magazine Size": 5,
+          "Ammo": 5,
+          "Reserve Ammo": 20,
+          "Max Reserve": 40,
+          "Ammo Per Pickup": 10,
+          "Reload Time": 2.4000001,
+          "Equip Time": 0.349999994,
+          "Impact Force": 20,
+          "Aim FOV": 14,
+          "Aim Position": [0, -0.0510000028, -0.219999999],
+          "Aim Speed": 8,
+          "Aim Spread": 0,
+          "Scope": true,
+          "Projectile Speed": 32,
+          "Explosion Radius": 5,
+          "Muzzle Flash": "c844531a40f3df0f",
+          "Rest Position": [0.150000006, -0.150000006, -0.479999989]
+        }
+      }
+    },
+    {
+      "uuid": "c844531a40f3df0f",
+      "name": "Muzzle Flash",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "85b84a3c06f45d1b",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.0149999997, -0.879999995],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/muzzleflash.obj",
+          "Material": "materials/MuzzleFlash.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": false,
+          "Layer": "Viewmodel"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.75, 0.400000006],
+          "Intensity": 0,
+          "Range": 7,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "dddfd15b8d53b1ff",
+      "name": "Rocket Launcher",
+      "tag": "Untagged",
+      "active": false,
+      "parent": "1e98451ae626674b",
+      "components": {
+        "Transform": {
+          "Position": [0.200000003, -0.180000007, -0.419999987],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.600000024, 0.600000024, 0.600000024]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/launcher.glb",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "Viewmodel"
+        },
+        "Weapon": {
+          "Slot": 4,
+          "Kind": "Launcher",
+          "Automatic": false,
+          "Damage": 130,
+          "Pellets": 1,
+          "Fire Rate": 0.800000012,
+          "Range": 200,
+          "Spread": 0.300000012,
+          "Recoil": 3,
+          "Magazine Size": 3,
+          "Ammo": 3,
+          "Reserve Ammo": 9,
+          "Max Reserve": 18,
+          "Ammo Per Pickup": 4,
+          "Reload Time": 2.5999999,
+          "Equip Time": 0.5,
+          "Impact Force": 7,
+          "Aim FOV": 58,
+          "Aim Position": [0.0659999996, -0.0600000024, -0.100000001],
+          "Aim Speed": 10,
+          "Aim Spread": 0.5,
+          "Scope": false,
+          "Projectile Speed": 30,
+          "Explosion Radius": 5.5,
+          "Muzzle Flash": "b48ece95414b758e",
+          "Rest Position": [0.200000003, -0.180000007, -0.419999987]
+        }
+      }
+    },
+    {
+      "uuid": "b48ece95414b758e",
+      "name": "Muzzle Flash",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dddfd15b8d53b1ff",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, -0.699999988],
           "Rotation": [0, 0, 0],
           "Scale": [1, 1, 1]
         },

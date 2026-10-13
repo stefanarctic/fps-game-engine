@@ -8,6 +8,7 @@
 #include "Forge/Core/Input.h"
 #include "Forge/Core/Json.h"
 #include "Forge/Core/Log.h"
+#include "Forge/Core/Settings.h"
 #include "Forge/Core/Time.h"
 
 #include "Forge/Math/Math.h"
@@ -31,3 +32,4 @@
 #include "Forge/Renderer/SceneRenderer.h"
 
 #include "Forge/Runtime/RuntimeLayer.h"
+#include "Forge/UI/PauseMenu.h"

@@ -59,6 +59,7 @@ void registerCoreComponents() {
     r.add<ParticleEmitter>("Particle System", "Effects")
         .field("Emitting", &ParticleEmitter::emitting)
         .field("Looping", &ParticleEmitter::loop)
+        .enumeration("Blend", &ParticleEmitter::blend, {"Additive", "Alpha"}).tooltip("Additive for fire and sparks, Alpha for smoke and debris")
         .field("Rate", &ParticleEmitter::rate, 0.5f, 0.0f, 1000.0f)
         .field("Burst", &ParticleEmitter::burst, 1.0f, 0.0f, 1000.0f)
         .field("Max Particles", &ParticleEmitter::maxParticles, 1.0f, 1.0f, 10000.0f)

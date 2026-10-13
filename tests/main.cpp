@@ -309,6 +309,21 @@ void testLoaders() {
         CHECK(emissive); // KHR_materials_emissive_strength
     }
 
+    // Weapon viewmodels: the muzzle-flash offsets in ArenaBuilder rely on these extents.
+    struct WeaponModel {
+        const char* path;
+        float muzzleZ;
+    };
+    for (const WeaponModel& wm : {WeaponModel{"models/shotgun.glb", -0.67f}, WeaponModel{"models/sniper.glb", -0.85f},
+                                  WeaponModel{"models/launcher.glb", -0.668f}}) {
+        Ref<Model> m = AssetManager::getModel(wm.path);
+        CHECK(m && m->submeshes.size() >= 4);
+        if (m) CHECK(std::fabs(m->bounds.min.z - wm.muzzleZ) < 0.01f);
+    }
+    Ref<Model> rocket = AssetManager::getModel("models/rocket.obj");
+    CHECK(rocket && rocket->submeshes.size() == 3);
+    if (rocket) CHECK(rocket->bounds.min.z < -0.25f); // nose points down -Z (forward)
+
     Ref<Model> cube = AssetManager::getModel("builtin:Cube");
     CHECK(cube && cube->submeshes[0].mesh->indexCount() == 36);
     float t;

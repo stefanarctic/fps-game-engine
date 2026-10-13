@@ -4,8 +4,9 @@ Generates every asset the Arena FPS needs, procedurally, with no third-party
 dependencies (pure Python standard library):
 
   textures/   grid.png, concrete.png, crate.png, metal.png, hazard.png, drone_panels.png
-  models/     crate.obj/.mtl, barrel.obj/.mtl, pillar.obj/.mtl, muzzleflash.obj/.mtl  (Wavefront OBJ)
+  models/     crate, barrel, pillar, muzzleflash, rocket  .obj/.mtl                    (Wavefront OBJ)
               rifle.gltf + rifle.bin                                                (glTF 2.0, external buffer)
+              shotgun.glb, sniper.glb, launcher.glb                                 (glTF 2.0 binary)
               drone.glb                                                             (glTF 2.0 binary, embedded PNG)
   materials/  *.mat (Forge material JSON)
 
@@ -387,10 +388,13 @@ def model_barrel():
     rings = MeshData()
     for y in (0.08, 0.4, 0.8, 1.12):
         rings.cylinder_y((0, y, 0), 0.415, 0.06, 28, caps=True)
-    write_obj("barrel", [("BarrelPaint", body), ("BarrelTop", top), ("BarrelRing", rings)], {
+    stripe = MeshData()  # warning band: these barrels explode
+    stripe.cylinder_y((0, 0.6, 0), 0.405, 0.18, 28, caps=False)
+    write_obj("barrel", [("BarrelPaint", body), ("BarrelTop", top), ("BarrelRing", rings), ("BarrelStripe", stripe)], {
         "BarrelPaint": ["Kd 0.62 0.10 0.07", "Ns 60", "Pm 0.2"],
         "BarrelTop": ["Kd 0.35 0.35 0.36", "Ns 80", "Pm 0.6"],
         "BarrelRing": ["Kd 0.18 0.18 0.19", "Ns 120", "Pm 0.8"],
+        "BarrelStripe": ["Kd 0.95 0.72 0.08", "Ns 40", "Pm 0.1"],
     })
 
 
@@ -575,9 +579,134 @@ def model_rifle():
     part("Grip", dark, lambda m: m.box((0, 0, 0), (0.04, 0.12, 0.05)), (0, -0.085, 0.04), quat_x(-15), parent=root)
     part("Magazine", metal, lambda m: m.box((0, 0, 0), (0.04, 0.17, 0.075)), (0, -0.1, -0.17), quat_x(12), parent=root)
     part("Rail", dark, lambda m: m.box((0, 0, 0), (0.03, 0.015, 0.30)), (0, 0.083, -0.12), parent=root)
-    sight = part("Sight", metal, lambda m: m.box((0, 0, 0), (0.036, 0.045, 0.06)), (0, 0.11, -0.05), parent=root)
-    part("Lens", dot, lambda m: m.box((0, 0, 0), (0.02, 0.02, 0.004)), (0, 0.005, -0.031), parent=sight)
+    # Open reflex sight: a hollow window with a floating red dot at y = 0.112 (the aim line).
+    reflex_sight(part, metal, dot, center=(0, 0.112, -0.07), base_y=0.0905)
     g.save_gltf("models/rifle.gltf", "models/rifle.bin")
+
+
+def reflex_sight(part, frame_mat, dot_mat, center, base_y, inner=0.026, bar=0.004):
+    """Hollow sight window centered on the aim line plus an emissive dot in the middle."""
+    cx, cy, cz = center
+    half = inner / 2 + bar / 2
+    part("Sight Base", frame_mat, lambda m: m.box((0, 0, 0), (inner + 2 * bar, 0.006, 0.05)), (cx, base_y, cz + 0.02))
+    part("Sight Left", frame_mat, lambda m: m.box((0, 0, 0), (bar, inner + 2 * bar, 0.008)), (cx - half, cy, cz))
+    part("Sight Right", frame_mat, lambda m: m.box((0, 0, 0), (bar, inner + 2 * bar, 0.008)), (cx + half, cy, cz))
+    part("Sight Top", frame_mat, lambda m: m.box((0, 0, 0), (inner + 2 * bar, bar, 0.008)), (cx, cy + half, cz))
+    # The lower edge of the window doubles as the riser down to the base.
+    part("Sight Riser", frame_mat, lambda m: m.box((0, 0, 0), (inner + 2 * bar, cy - half - base_y, 0.008)),
+         (cx, (cy - half + base_y) / 2 + bar / 2, cz))
+    part("Dot", dot_mat, lambda m: m.box((0, 0, 0), (0.0035, 0.0035, 0.002)), (cx, cy, cz))
+
+
+def model_shotgun():
+    """Pump shotgun (GLB). Sight line: rear notch -> front bead at y = 0.050. Muzzle at z = -0.67."""
+    g = GltfBuilder()
+    metal = g.material("BluedSteel", (0.16, 0.17, 0.19), metallic=0.7, roughness=0.35)
+    wood = g.material("Walnut", (0.42, 0.24, 0.12), metallic=0.0, roughness=0.55)
+    dark = g.material("Rubber", (0.10, 0.10, 0.10), metallic=0.0, roughness=0.85)
+    bead = g.material("Bead", (0.4, 1.0, 0.5), emissive=(0.8, 3.0, 1.0))
+
+    def part(name, mat, build, translation=None, rotation=None, parent=None):
+        m = MeshData()
+        build(m)
+        return g.node(name, g.mesh(name, m, mat), translation, rotation, None, parent if parent is not None else root)
+
+    root = g.node("Shotgun")
+    part("Receiver", metal, lambda m: m.box((0, 0, 0), (0.065, 0.085, 0.26)), (0, 0.0, -0.02))
+    part("Barrel", metal, lambda m: m.cylinder_z((0, 0, 0), 0.017, 0.52), (0, 0.025, -0.41))
+    part("Rib", dark, lambda m: m.box((0, 0, 0), (0.012, 0.006, 0.50)), (0, 0.044, -0.41))
+    part("Magazine Tube", metal, lambda m: m.cylinder_z((0, 0, 0), 0.014, 0.40), (0, -0.018, -0.36))
+    part("Pump", wood, lambda m: m.box((0, 0, 0), (0.058, 0.05, 0.17)), (0, -0.02, -0.40))
+    part("Stock", wood, lambda m: m.box((0, 0, 0), (0.048, 0.095, 0.27)), (0, -0.035, 0.24), quat_x(-6))
+    part("Butt Pad", dark, lambda m: m.box((0, 0, 0), (0.052, 0.11, 0.025)), (0, -0.05, 0.38), quat_x(-6))
+    part("Grip", dark, lambda m: m.box((0, 0, 0), (0.04, 0.11, 0.05)), (0, -0.075, 0.08), quat_x(-15))
+    part("Trigger Guard", metal, lambda m: m.box((0, 0, 0), (0.012, 0.012, 0.07)), (0, -0.06, 0.02))
+    part("Rear Notch L", metal, lambda m: m.box((0, 0, 0), (0.006, 0.012, 0.01)), (-0.009, 0.0485, -0.14))
+    part("Rear Notch R", metal, lambda m: m.box((0, 0, 0), (0.006, 0.012, 0.01)), (0.009, 0.0485, -0.14))
+    part("Front Bead", bead, lambda m: m.box((0, 0, 0), (0.007, 0.007, 0.007)), (0, 0.0505, -0.655))
+    g.save_glb("models/shotgun.glb")
+
+
+def model_sniper():
+    """Bolt-action sniper rifle (GLB). Scope axis at y = 0.085. Muzzle at z = -0.85."""
+    g = GltfBuilder()
+    metal = g.material("Gunmetal", (0.20, 0.21, 0.22), metallic=0.7, roughness=0.32)
+    stock = g.material("Composite", (0.26, 0.30, 0.22), metallic=0.0, roughness=0.75)
+    dark = g.material("Matte", (0.07, 0.07, 0.08), metallic=0.4, roughness=0.55)
+    glass = g.material("ScopeGlass", (0.08, 0.16, 0.30), metallic=0.9, roughness=0.05, emissive=(0.05, 0.12, 0.25))
+
+    def part(name, mat, build, translation=None, rotation=None):
+        m = MeshData()
+        build(m)
+        return g.node(name, g.mesh(name, m, mat), translation, rotation, None, root)
+
+    root = g.node("Sniper")
+    part("Receiver", metal, lambda m: m.box((0, 0, 0), (0.06, 0.075, 0.34)), (0, 0.0, -0.03))
+    part("Barrel", metal, lambda m: m.cylinder_z((0, 0, 0), 0.013, 0.60), (0, 0.015, -0.50))
+    part("Muzzle Brake", dark, lambda m: m.cylinder_z((0, 0, 0), 0.02, 0.06), (0, 0.015, -0.82))
+    part("Stock", stock, lambda m: m.box((0, 0, 0), (0.05, 0.10, 0.32)), (0, -0.03, 0.29))
+    part("Cheek Rest", stock, lambda m: m.box((0, 0, 0), (0.045, 0.03, 0.14)), (0, 0.03, 0.27))
+    part("Forend", stock, lambda m: m.box((0, 0, 0), (0.056, 0.05, 0.30)), (0, -0.03, -0.33))
+    part("Grip", dark, lambda m: m.box((0, 0, 0), (0.04, 0.11, 0.05)), (0, -0.08, 0.08), quat_x(-18))
+    part("Magazine", dark, lambda m: m.box((0, 0, 0), (0.04, 0.07, 0.07)), (0, -0.065, -0.06))
+    part("Bolt Handle", metal, lambda m: m.box((0, 0, 0), (0.05, 0.012, 0.012)), (0.045, 0.02, 0.05))
+    part("Bolt Knob", dark, lambda m: m.sphere((0, 0, 0), 0.012, 12, 8), (0.07, 0.02, 0.05))
+    part("Scope Ring Front", dark, lambda m: m.box((0, 0, 0), (0.05, 0.05, 0.02)), (0, 0.06, -0.12))
+    part("Scope Ring Rear", dark, lambda m: m.box((0, 0, 0), (0.05, 0.05, 0.02)), (0, 0.06, 0.05))
+    part("Scope Tube", dark, lambda m: m.cylinder_z((0, 0, 0), 0.021, 0.32), (0, 0.085, -0.04))
+    part("Objective Bell", dark, lambda m: m.cylinder_z((0, 0, 0), 0.032, 0.08), (0, 0.085, -0.23))
+    part("Objective Lens", glass, lambda m: m.cylinder_z((0, 0, 0), 0.028, 0.004), (0, 0.085, -0.272))
+    part("Eyepiece", dark, lambda m: m.cylinder_z((0, 0, 0), 0.027, 0.06), (0, 0.085, 0.13))
+    part("Turret", metal, lambda m: m.cylinder_y((0, 0, 0), 0.012, 0.03, 16), (0, 0.113, -0.04))
+    g.save_glb("models/sniper.glb")
+
+
+def model_launcher():
+    """Shoulder rocket launcher (GLB). Reflex sight on the left of the tube, dot at (-0.11, 0.10).
+    Tube mouth at z = -0.57."""
+    g = GltfBuilder()
+    olive = g.material("OliveDrab", (0.30, 0.33, 0.20), metallic=0.1, roughness=0.65)
+    dark = g.material("Steel", (0.12, 0.12, 0.13), metallic=0.6, roughness=0.45)
+    warhead = g.material("Warhead", (0.36, 0.38, 0.26), metallic=0.3, roughness=0.5)
+    tip = g.material("Tip", (0.75, 0.12, 0.08), metallic=0.2, roughness=0.4)
+    dot = g.material("RedDot", (1.0, 0.1, 0.1), emissive=(6.0, 0.3, 0.2))
+
+    def part(name, mat, build, translation=None, rotation=None):
+        m = MeshData()
+        build(m)
+        return g.node(name, g.mesh(name, m, mat), translation, rotation, None, root)
+
+    root = g.node("Launcher")
+    part("Tube", olive, lambda m: m.cylinder_z((0, 0, 0), 0.062, 0.90, 24), (0, 0, -0.12))
+    part("Front Ring", dark, lambda m: m.cylinder_z((0, 0, 0), 0.07, 0.05, 24), (0, 0, -0.55))
+    part("Rear Ring", dark, lambda m: m.cylinder_z((0, 0, 0), 0.074, 0.07, 24), (0, 0, 0.30))
+    part("Mid Band", dark, lambda m: m.cylinder_z((0, 0, 0), 0.066, 0.03, 24), (0, 0, -0.05))
+    part("Warhead", warhead, lambda m: m.sphere((0, 0, 0), 0.05, 16, 10, scale=(1, 1, 1.5)), (0, 0, -0.58))
+    part("Warhead Tip", tip, lambda m: m.sphere((0, 0, 0), 0.018, 10, 6), (0, 0, -0.65))
+    part("Grip", dark, lambda m: m.box((0, 0, 0), (0.04, 0.12, 0.05)), (0, -0.11, 0.0), quat_x(-12))
+    part("Front Grip", dark, lambda m: m.box((0, 0, 0), (0.035, 0.10, 0.04)), (0, -0.10, -0.28))
+    part("Shoulder Pad", dark, lambda m: m.box((0, 0, 0), (0.05, 0.03, 0.16)), (0, -0.075, 0.17))
+    # Side-mounted sight keeps the tube out of the way when aiming.
+    part("Sight Mount", dark, lambda m: m.box((0, 0, 0), (0.07, 0.04, 0.08)), (-0.08, 0.057, -0.28))
+    reflex_sight(part, dark, dot, center=(-0.11, 0.10, -0.30), base_y=0.077)
+    g.save_glb("models/launcher.glb")
+
+
+def model_rocket():
+    """Rocket projectile (OBJ), nose towards -Z."""
+    body = MeshData()
+    body.cylinder_z((0, 0, 0), 0.05, 0.40)
+    nose = MeshData()
+    nose.sphere((0, 0, -0.2), 0.05, 16, 10, scale=(1, 1, 1.8))
+    fins = MeshData()
+    fins.box((0, 0, 0.16), (0.2, 0.008, 0.09))
+    fins.box((0, 0, 0.16), (0.008, 0.2, 0.09))
+    fins.cylinder_z((0, 0, 0.215), 0.035, 0.03)
+    write_obj("rocket", [("RocketBody", body), ("RocketNose", nose), ("RocketFins", fins)], {
+        "RocketBody": ["Kd 0.36 0.38 0.26", "Ns 40", "Pm 0.3"],
+        "RocketNose": ["Kd 0.75 0.12 0.08", "Ns 60", "Pm 0.2"],
+        "RocketFins": ["Kd 0.12 0.12 0.13", "Ns 80", "Pm 0.6"],
+    })
 
 
 def model_drone(panel_png):
@@ -645,6 +774,10 @@ def main():
     model_pillar()
     model_muzzleflash()
     model_rifle()
+    model_shotgun()
+    model_sniper()
+    model_launcher()
+    model_rocket()
     model_drone(panels)
     materials()
     print("Done.")

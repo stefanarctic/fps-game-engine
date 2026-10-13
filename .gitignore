@@ -10,6 +10,7 @@ out/
 .vscode/
 *.user
 ForgeEditor.ini
+ForgeSettings.json
 
 # Local Claude Code settings
 .claude/settings.local.json

@@ -29,6 +29,47 @@ ImU32 alpha(ImU32 color, float a) {
     int na = (int)(base * std::fmax(0.0f, std::fmin(a, 1.0f)));
     return (color & 0x00FFFFFF) | ((ImU32)na << 24);
 }
+
+// Sniper scope: black outside a circle, thin reticle with mil-dots and thick outer posts.
+void drawScope(ImDrawList* dl, ImVec2 min, ImVec2 max, ImVec2 c, float scale) {
+    const ImU32 black = IM_COL32(0, 0, 0, 255);
+    float r = (max.y - min.y) * 0.46f;
+    dl->AddRectFilled(min, ImVec2(c.x - r, max.y), black);
+    dl->AddRectFilled(ImVec2(c.x + r, min.y), max, black);
+    dl->AddRectFilled(ImVec2(c.x - r, min.y), ImVec2(c.x + r, c.y - r), black);
+    dl->AddRectFilled(ImVec2(c.x - r, c.y + r), ImVec2(c.x + r, max.y), black);
+    // Fill the square's corners outside the circle with an annulus of quads.
+    const int segments = 96;
+    float outer = r * 1.5f;
+    ImDrawListFlags flags = dl->Flags;
+    dl->Flags &= ~ImDrawListFlags_AntiAliasedFill; // no seams between the quads
+    for (int i = 0; i < segments; ++i) {
+        float a0 = 2.0f * Math::PI * i / segments, a1 = 2.0f * Math::PI * (i + 1) / segments;
+        ImVec2 d0(std::cos(a0), std::sin(a0)), d1(std::cos(a1), std::sin(a1));
+        dl->AddQuadFilled(ImVec2(c.x + d0.x * r, c.y + d0.y * r), ImVec2(c.x + d0.x * outer, c.y + d0.y * outer),
+                          ImVec2(c.x + d1.x * outer, c.y + d1.y * outer), ImVec2(c.x + d1.x * r, c.y + d1.y * r), black);
+    }
+    dl->Flags = flags;
+    // Lens edge shading
+    for (int i = 0; i < 6; ++i) dl->AddCircle(c, r - i * 3.0f * scale, IM_COL32(0, 0, 0, 120 - i * 18), segments, 3.0f * scale);
+
+    const ImU32 ink = IM_COL32(5, 5, 5, 235);
+    float thin = 1.4f * scale, thick = 5.0f * scale, post = r * 0.45f;
+    dl->AddLine(ImVec2(c.x - r, c.y), ImVec2(c.x + r, c.y), ink, thin);
+    dl->AddLine(ImVec2(c.x, c.y - r), ImVec2(c.x, c.y + r), ink, thin);
+    dl->AddLine(ImVec2(c.x - r, c.y), ImVec2(c.x - post, c.y), ink, thick);
+    dl->AddLine(ImVec2(c.x + post, c.y), ImVec2(c.x + r, c.y), ink, thick);
+    dl->AddLine(ImVec2(c.x, c.y + post), ImVec2(c.x, c.y + r), ink, thick);
+    float step = r * 0.075f;
+    for (int i = 1; i <= 5; ++i) {
+        float o = step * (float)i;
+        dl->AddCircleFilled(ImVec2(c.x + o, c.y), 2.2f * scale, ink);
+        dl->AddCircleFilled(ImVec2(c.x - o, c.y), 2.2f * scale, ink);
+        dl->AddCircleFilled(ImVec2(c.x, c.y + o), 2.2f * scale, ink);
+        dl->AddCircleFilled(ImVec2(c.x, c.y - o), 2.2f * scale, ink);
+    }
+    dl->AddCircleFilled(c, 1.8f * scale, IM_COL32(255, 40, 30, 255));
+}
 } // namespace
 
 void drawHud(Scene& scene, const Viewport& vp) {
@@ -48,7 +89,11 @@ void drawHud(Scene& scene, const Viewport& vp) {
     if (!scene.valid(pe)) return;
     Player& player = scene.get<Player>(pe);
     Health* hp = scene.tryGet<Health>(pe);
-    Weapon* weapon = scene.valid(player.weapon) ? scene.tryGet<Weapon>(player.weapon) : nullptr;
+    Weapon* weapon = equippedWeapon(scene, player);
+    float aim = weapon ? weapon->aim : 0.0f;
+    bool scoped = weapon && weapon->scope && weapon->aim > 0.92f && !player.dead;
+
+    if (scoped) drawScope(dl, min, max, c, scale);
 
     // Damage vignette
     if (player.damageFlash > 0.0f) {
@@ -61,11 +106,12 @@ void drawHud(Scene& scene, const Viewport& vp) {
         dl->AddRectFilledMultiColor(ImVec2(min.x, max.y - h), max, clear, clear, red, red);
     }
 
-    // Crosshair (gap widens with spread)
-    if (!player.dead) {
+    // Crosshair (gap widens with spread, fades out while aiming down sights)
+    float crosshair = 1.0f - Math::clamp01(aim * 2.5f);
+    if (!player.dead && crosshair > 0.0f) {
         float spread = weapon ? weapon->spread + weapon->bloom : 1.0f;
         float gap = (5.0f + spread * 6.0f) * scale, len = 9.0f * scale, th = 2.0f * scale;
-        ImU32 col = IM_COL32(255, 255, 255, 230), shadow = IM_COL32(0, 0, 0, 150);
+        ImU32 col = alpha(IM_COL32(255, 255, 255, 230), crosshair), shadow = alpha(IM_COL32(0, 0, 0, 150), crosshair);
         for (int pass = 0; pass < 2; ++pass) {
             ImU32 cc = pass == 0 ? shadow : col;
             float o = pass == 0 ? 1.0f : 0.0f, t = pass == 0 ? th + 2.0f : th;
@@ -75,6 +121,8 @@ void drawHud(Scene& scene, const Viewport& vp) {
             dl->AddLine(ImVec2(c.x + gap, c.y + o), ImVec2(c.x + gap + len, c.y + o), cc, t);
         }
         dl->AddCircleFilled(c, 1.6f * scale, col);
+    }
+    if (!player.dead) {
         if (gm && gm->hitMarker > 0.0f) {
             float s = 7.0f * scale, g = 4.0f * scale;
             ImU32 hit = alpha(IM_COL32(255, 80, 60, 255), gm->hitMarker / 0.15f);
@@ -113,6 +161,35 @@ void drawHud(Scene& scene, const Viewport& vp) {
         ImU32 ammoCol = weapon->ammo == 0 ? IM_COL32(235, 70, 60, 255) : IM_COL32(255, 255, 255, 255);
         textShadow(dl, fonts.large, large, p, ammoCol, ammo);
         textShadow(dl, fonts.medium, medium, ImVec2(p.x + as.x + 8 * scale, p.y + as.y - rs.y - 6 * scale), IM_COL32(190, 190, 190, 255), reserve);
+
+        // Weapon name and the inventory strip (slot numbers, equipped one highlighted).
+        const std::string& name = scene.nameOf(player.weapon);
+        float nameY = p.y - small - 14.0f * scale;
+        ImVec2 ns = measure(fonts.bold, small, name.c_str());
+        textShadow(dl, fonts.bold, small, ImVec2(max.x - pad - ns.x, nameY), IM_COL32(255, 220, 150, 255), name.c_str());
+        std::vector<Entity> inventory = weaponInventory(scene, player);
+        float box = 26.0f * scale, gapX = 6.0f * scale;
+        float x = max.x - pad - inventory.size() * (box + gapX) + gapX;
+        float y = nameY - box - 8.0f * scale;
+        for (Entity we : inventory) {
+            const Weapon& w = scene.get<Weapon>(we);
+            bool current = we == player.weapon;
+            bool empty = w.ammo == 0 && w.reserveAmmo == 0;
+            dl->AddRectFilled(ImVec2(x, y), ImVec2(x + box, y + box), current ? IM_COL32(245, 140, 40, 220) : IM_COL32(0, 0, 0, 120), 4.0f);
+            dl->AddRect(ImVec2(x, y), ImVec2(x + box, y + box), IM_COL32(255, 255, 255, current ? 200 : 60), 4.0f);
+            char slot[8];
+            std::snprintf(slot, sizeof(slot), "%d", w.slot);
+            ImU32 col = empty ? IM_COL32(200, 80, 70, 255) : (current ? IM_COL32(20, 20, 20, 255) : IM_COL32(220, 220, 220, 255));
+            ImVec2 sz = measure(fonts.bold, small * 0.9f, slot);
+            dl->AddText(fonts.bold, small * 0.9f, ImVec2(x + (box - sz.x) * 0.5f, y + (box - sz.y) * 0.5f), col, slot);
+            x += box + gapX;
+        }
+
+        // Banner when switching weapons
+        if (player.switchBanner > 0.0f && !player.dead) {
+            float a = std::fmin(player.switchBanner / 0.4f, 1.0f);
+            centered(dl, fonts.medium, medium * 0.9f, ImVec2(c.x, max.y - pad - medium * 2.2f), alpha(IM_COL32(255, 255, 255, 255), a), name.c_str());
+        }
         const char* status = nullptr;
         if (weapon->reloading) status = "RELOADING...";
         else if (weapon->ammo == 0 && weapon->reserveAmmo > 0) status = "PRESS R TO RELOAD";

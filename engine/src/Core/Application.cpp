@@ -3,6 +3,7 @@
 #include "Forge/Core/FileSystem.h"
 #include "Forge/Core/Input.h"
 #include "Forge/Core/Log.h"
+#include "Forge/Core/Settings.h"
 #include "Forge/Core/Time.h"
 #include "Forge/Renderer/DebugDraw.h"
 #include "Forge/Scene/Components.h"
@@ -39,6 +40,8 @@ AppConfig AppConfig::fromArgs(int argc, char** argv, AppConfig cfg) {
         else if (a == "--height" && i + 1 < argc) cfg.height = std::atoi(argv[++i]);
         else if (a == "--novsync") cfg.vsync = false;
         else if (a == "--maximized") cfg.maximized = true;
+        else if (a == "--pause") cfg.pauseMenu = PauseMenuStart::Main;
+        else if (a == "--pause-settings") cfg.pauseMenu = PauseMenuStart::Settings;
     }
     return cfg;
 }
@@ -91,6 +94,10 @@ bool Application::init() {
 
     initImGui();
     registerCoreComponents();
+
+    // Player settings (vsync from the file unless --novsync was given).
+    Settings::load();
+    setVSync(m_Config.vsync && Settings::get().vsync);
     return true;
 }
 
@@ -148,6 +155,24 @@ void Application::setVSync(bool enabled) {
     m_VSync = enabled;
     glfwSwapInterval(enabled ? 1 : 0);
 }
+
+void Application::setFullscreen(bool enabled) {
+    if (!m_Window || enabled == m_Fullscreen) return;
+    if (enabled) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = monitor ? glfwGetVideoMode(monitor) : nullptr;
+        if (!mode) return;
+        glfwGetWindowPos(m_Window, &m_WindowedRect[0], &m_WindowedRect[1]);
+        glfwGetWindowSize(m_Window, &m_WindowedRect[2], &m_WindowedRect[3]);
+        glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    } else {
+        glfwSetWindowMonitor(m_Window, nullptr, m_WindowedRect[0], m_WindowedRect[1], m_WindowedRect[2], m_WindowedRect[3], 0);
+    }
+    m_Fullscreen = enabled;
+    setVSync(m_VSync); // some drivers reset the swap interval on a mode change
+}
+
+bool Application::windowFocused() const { return m_Window && glfwGetWindowAttrib(m_Window, GLFW_FOCUSED) != 0; }
 
 int Application::run() {
     if (!m_Initialized) return 1;

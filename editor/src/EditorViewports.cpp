@@ -317,11 +317,7 @@ void EditorLayer::drawGameView() {
     bool visible = ImGui::Begin("Game", &m_ShowGameView, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     ImGui::PopStyleVar();
     if (!visible) {
-        if (m_GameCaptured) {
-            m_GameCaptured = false;
-            Input::setCursorLocked(false);
-            ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-        }
+        captureGameMouse(false);
         ImGui::End();
         return;
     }
@@ -334,7 +330,10 @@ void EditorLayer::drawGameView() {
     viewToolbarToggle("Stats", m_ShowStats);
     if (m_State != PlayState::Edit) {
         ImGui::SameLine();
-        ImGui::TextDisabled(m_GameCaptured ? "|  Esc releases the mouse" : "|  Click to capture the mouse");
+        const char* hint = m_PauseMenu.isOpen() ? "|  Paused - Esc resumes"
+                           : m_GameCaptured     ? "|  Esc opens the pause menu"
+                                                : "|  Click to capture the mouse";
+        ImGui::TextDisabled("%s", hint);
     }
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 
@@ -346,8 +345,7 @@ void EditorLayer::drawGameView() {
     Entity camEntity = m_Scene->primaryCamera();
     if (m_Scene->valid(camEntity)) {
         CameraData cam = CameraData::fromEntity(*m_Scene, camEntity, size.x / size.y);
-        RenderOptions options;
-        m_GameRenderer->render(*m_Scene, cam, (int)size.x, (int)size.y, options);
+        m_GameRenderer->render(*m_Scene, cam, (int)size.x, (int)size.y, RenderOptions::fromSettings());
         ImGui::Image((ImTextureID)(uintptr_t)m_GameRenderer->outputTexture(), ImVec2(size.x, size.y), ImVec2(0, 1), ImVec2(1, 0));
     } else {
         ImGui::InvisibleButton("##nocam", ImVec2(size.x, size.y));
@@ -369,17 +367,28 @@ void EditorLayer::drawGameView() {
         dl->PopClipRect();
     }
 
-    // Mouse capture for gameplay
-    ImGuiIO& io = ImGui::GetIO();
-    if (m_State == PlayState::Playing && !m_GameCaptured && hovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-        m_GameCaptured = true;
-        Input::setCursorLocked(true);
-        io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+    // Mouse capture for gameplay. Escape releases the mouse and opens the pause menu.
+    if (m_State == PlayState::Playing && !m_GameCaptured && !m_PauseMenu.isOpen() && hovered &&
+        ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        captureGameMouse(true);
+    if (m_GameCaptured && ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+        captureGameMouse(false);
+        if (m_State == PlayState::Playing) m_PauseMenu.open();
     }
-    if (m_GameCaptured && (ImGui::IsKeyPressed(ImGuiKey_Escape, false) || m_State != PlayState::Playing)) {
-        m_GameCaptured = false;
-        Input::setCursorLocked(false);
-        io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+    if (m_GameCaptured && m_State != PlayState::Playing) captureGameMouse(false);
+
+    if (m_PauseMenu.isOpen() && m_State != PlayState::Edit) {
+        Viewport vp;
+        vp.position = glm::vec2(cursor.x, cursor.y);
+        vp.size = size;
+        vp.drawList = dl;
+        ImVec2 restore = ImGui::GetCursorScreenPos();
+        switch (m_PauseMenu.draw(vp, m_Game.name(), "Exit Play Mode")) {
+        case PauseMenu::Action::Resume: captureGameMouse(true); break;
+        case PauseMenu::Action::Quit: stop(); break;
+        case PauseMenu::Action::None: break;
+        }
+        ImGui::SetCursorScreenPos(restore);
     }
 
     if (m_ShowStats) {
