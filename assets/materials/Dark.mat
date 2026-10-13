@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.12,
+    0.12,
+    0.13,
+    1
+  ],
+  "Albedo Map": "",
+  "Metallic": 0.4,
+  "Roughness": 0.45,
+  "Emission": [
+    0,
+    0,
+    0
+  ],
+  "Tiling": [
+    1,
+    1
+  ],
+  "World Space UV": false,
+  "Name": "Dark"
+}

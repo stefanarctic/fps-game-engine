@@ -1,0 +1,2533 @@
+{
+  "name": "Arena",
+  "environment": {
+    "Sky Color": [0.340000004, 0.519999981, 0.819999993],
+    "Horizon Color": [0.800000012, 0.779999971, 0.74000001],
+    "Ground Color": [0.300000012, 0.270000011, 0.25],
+    "Ambient Intensity": 0.550000012,
+    "Sky Intensity": 1,
+    "Fog": true,
+    "Fog Color": [0.699999988, 0.720000029, 0.75],
+    "Fog Density": 0.00999999978,
+    "SSAO": true,
+    "SSAO Radius": 0.600000024,
+    "SSAO Bias": 0.0299999993,
+    "SSAO Power": 1.60000002,
+    "SSAO Samples": 24,
+    "Shadows": true,
+    "Shadow Distance": 45,
+    "Shadow Bias": 0.00079999998,
+    "Shadow Softness": 1,
+    "Exposure": 1,
+    "Bloom": true,
+    "Bloom Threshold": 1,
+    "Bloom Intensity": 0.600000024,
+    "FXAA": true,
+    "Vignette": 0.25
+  },
+  "entities": [
+    {
+      "uuid": "29221c780d53d6e8",
+      "name": "Directional Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "0000000000000000",
+      "components": {
+        "Transform": {
+          "Position": [0, 12, 0],
+          "Rotation": [-48, 35, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Directional",
+          "Color": [1, 0.939999998, 0.819999993],
+          "Intensity": 1.25,
+          "Range": 10,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "e905818c63de0fa8",
+      "name": "Level",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "0000000000000000",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "4a387410ba943d04",
+      "name": "Floor",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, -0.5, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [60, 1, 60]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Floor.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "dac6e1acd863cb38",
+      "name": "Walls",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "14c4dc8476f3a0af",
+      "name": "Wall North",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [0, 3, -30.5],
+          "Rotation": [0, 0, 0],
+          "Scale": [62, 6, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "7aa3bbd2362ee5ab",
+      "name": "Wall South",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [0, 3, 30.5],
+          "Rotation": [0, 0, 0],
+          "Scale": [62, 6, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "f0535b9f645f1577",
+      "name": "Wall East",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [30.5, 3, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 6, 60]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "eda9dcbf9bdb6f5e",
+      "name": "Wall West",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [-30.5, 3, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 6, 60]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "96de6d888cbbc5c0",
+      "name": "Strip North",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.25, -29.9699993],
+          "Rotation": [0, 0, 0],
+          "Scale": [60, 0.119999997, 0.0599999987]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowCyan.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "c6966819cdc240c7",
+      "name": "Strip South",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.25, 29.9699993],
+          "Rotation": [0, 0, 0],
+          "Scale": [60, 0.119999997, 0.0599999987]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowCyan.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "ac5aa1d18d503ad0",
+      "name": "Strip East",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [29.9699993, 0.25, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.0599999987, 0.119999997, 60]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowCyan.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "d62d280d4a72c0e1",
+      "name": "Strip West",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "dac6e1acd863cb38",
+      "components": {
+        "Transform": {
+          "Position": [-29.9699993, 0.25, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.0599999987, 0.119999997, 60]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowCyan.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "433a879b7efdc44b",
+      "name": "Center",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "038499934418d20d",
+      "name": "Platform",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "433a879b7efdc44b",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.5, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [9, 1, 9]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Metal.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "514cd901da1a6931",
+      "name": "Platform Trim",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "433a879b7efdc44b",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.01999998, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [9.10000038, 0.0599999987, 9.10000038]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Hazard.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "74ece6ad63893512",
+      "name": "Monolith",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "433a879b7efdc44b",
+      "components": {
+        "Transform": {
+          "Position": [0, 3.5, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1.60000002, 5, 1.60000002]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Dark.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "12d7f3875aeb6776",
+      "name": "Monolith Glow",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "433a879b7efdc44b",
+      "components": {
+        "Transform": {
+          "Position": [0, 3.5, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1.64999998, 0.150000006, 1.64999998]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowOrange.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "9147ebf1679cd90a",
+      "name": "Monolith Cap",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "433a879b7efdc44b",
+      "components": {
+        "Transform": {
+          "Position": [0, 6.05000019, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [2, 0.100000001, 2]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "4d1aacd21df7e196",
+      "name": "Monolith Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "433a879b7efdc44b",
+      "components": {
+        "Transform": {
+          "Position": [0, 3.5, 2.20000005],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.550000012, 0.200000003],
+          "Intensity": 2,
+          "Range": 9,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "128c7ca8a2515d81",
+      "name": "Bunkers",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "bc45a44b6da6e800",
+      "name": "Bunker 1",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "128c7ca8a2515d81",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "99284cf82ffa4975",
+      "name": "Wall A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "bc45a44b6da6e800",
+      "components": {
+        "Transform": {
+          "Position": [-18, 0.699999988, -18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5, 1.39999998, 0.600000024]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "83c926f75e77ec60",
+      "name": "Wall B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "bc45a44b6da6e800",
+      "components": {
+        "Transform": {
+          "Position": [-15.8000002, 0.699999988, -16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.600000024, 1.39999998, 4.5999999]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "3e3b004e71175d1f",
+      "name": "Cap A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "bc45a44b6da6e800",
+      "components": {
+        "Transform": {
+          "Position": [-18, 1.42999995, -18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5.05000019, 0.0599999987, 0.649999976]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "2f7037d1278172e1",
+      "name": "Cap B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "bc45a44b6da6e800",
+      "components": {
+        "Transform": {
+          "Position": [-15.8000002, 1.42999995, -16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.649999976, 0.0599999987, 4.6500001]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "7a33f0e28a52f469",
+      "name": "Bunker 2",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "128c7ca8a2515d81",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "8bbcc0e4f10edf98",
+      "name": "Wall A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "7a33f0e28a52f469",
+      "components": {
+        "Transform": {
+          "Position": [18, 0.699999988, -18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5, 1.39999998, 0.600000024]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "0384282826597ae9",
+      "name": "Wall B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "7a33f0e28a52f469",
+      "components": {
+        "Transform": {
+          "Position": [15.8000002, 0.699999988, -16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.600000024, 1.39999998, 4.5999999]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "b38845a45577de56",
+      "name": "Cap A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "7a33f0e28a52f469",
+      "components": {
+        "Transform": {
+          "Position": [18, 1.42999995, -18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5.05000019, 0.0599999987, 0.649999976]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "6108020bab271bd0",
+      "name": "Cap B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "7a33f0e28a52f469",
+      "components": {
+        "Transform": {
+          "Position": [15.8000002, 1.42999995, -16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.649999976, 0.0599999987, 4.6500001]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "8e27465bf6845b9c",
+      "name": "Bunker 3",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "128c7ca8a2515d81",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "e233f98c0f7d14e8",
+      "name": "Wall A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "8e27465bf6845b9c",
+      "components": {
+        "Transform": {
+          "Position": [-18, 0.699999988, 18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5, 1.39999998, 0.600000024]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "99e0be1cd4acd70f",
+      "name": "Wall B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "8e27465bf6845b9c",
+      "components": {
+        "Transform": {
+          "Position": [-15.8000002, 0.699999988, 16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.600000024, 1.39999998, 4.5999999]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "d4278d3079032912",
+      "name": "Cap A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "8e27465bf6845b9c",
+      "components": {
+        "Transform": {
+          "Position": [-18, 1.42999995, 18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5.05000019, 0.0599999987, 0.649999976]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "757ea8562be84696",
+      "name": "Cap B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "8e27465bf6845b9c",
+      "components": {
+        "Transform": {
+          "Position": [-15.8000002, 1.42999995, 16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.649999976, 0.0599999987, 4.6500001]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "14f274e956d16ec2",
+      "name": "Bunker 4",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "128c7ca8a2515d81",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "f11155d49305ab5e",
+      "name": "Wall A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "14f274e956d16ec2",
+      "components": {
+        "Transform": {
+          "Position": [18, 0.699999988, 18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5, 1.39999998, 0.600000024]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "e6479315338abfb8",
+      "name": "Wall B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "14f274e956d16ec2",
+      "components": {
+        "Transform": {
+          "Position": [15.8000002, 0.699999988, 16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.600000024, 1.39999998, 4.5999999]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Wall.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "81e06f437a63ff5a",
+      "name": "Cap A",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "14f274e956d16ec2",
+      "components": {
+        "Transform": {
+          "Position": [18, 1.42999995, 18],
+          "Rotation": [0, 0, 0],
+          "Scale": [5.05000019, 0.0599999987, 0.649999976]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "407f8ce4f2557492",
+      "name": "Cap B",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "14f274e956d16ec2",
+      "components": {
+        "Transform": {
+          "Position": [15.8000002, 1.42999995, 16],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.649999976, 0.0599999987, 4.6500001]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "f884a524cb33d1a7",
+      "name": "Pillars",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "9a2d782c287b4f1f",
+      "name": "Pillar",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "f884a524cb33d1a7",
+      "components": {
+        "Transform": {
+          "Position": [-11, 0, -11],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/pillar.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 2.25, 0],
+          "Size": [1.20000005, 4.5, 1.20000005],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "1c1873e38853e195",
+      "name": "Lamp",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "9a2d782c287b4f1f",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.75, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 0.5, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowCyan.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "0692c9a84ea1d809",
+      "name": "Lamp Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "9a2d782c287b4f1f",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.69999981, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [0.400000006, 0.800000012, 1],
+          "Intensity": 2.20000005,
+          "Range": 13,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "69e017b574753cb0",
+      "name": "Pillar",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "f884a524cb33d1a7",
+      "components": {
+        "Transform": {
+          "Position": [11, 0, -11],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/pillar.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 2.25, 0],
+          "Size": [1.20000005, 4.5, 1.20000005],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "2f73c0e83b23b563",
+      "name": "Lamp",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "69e017b574753cb0",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.75, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 0.5, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowOrange.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "030833556f36fd7b",
+      "name": "Lamp Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "69e017b574753cb0",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.69999981, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.600000024, 0.300000012],
+          "Intensity": 2.20000005,
+          "Range": 13,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "9ef99ea41438c04c",
+      "name": "Pillar",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "f884a524cb33d1a7",
+      "components": {
+        "Transform": {
+          "Position": [-11, 0, 11],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/pillar.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 2.25, 0],
+          "Size": [1.20000005, 4.5, 1.20000005],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "4d0cebd1cadf2185",
+      "name": "Lamp",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "9ef99ea41438c04c",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.75, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 0.5, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowCyan.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "3a16d2f6e95b7fa0",
+      "name": "Lamp Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "9ef99ea41438c04c",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.69999981, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [0.400000006, 0.800000012, 1],
+          "Intensity": 2.20000005,
+          "Range": 13,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "8773d84c2cabc573",
+      "name": "Pillar",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "f884a524cb33d1a7",
+      "components": {
+        "Transform": {
+          "Position": [11, 0, 11],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/pillar.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 2.25, 0],
+          "Size": [1.20000005, 4.5, 1.20000005],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "ad8dd2bf3a44e29d",
+      "name": "Lamp",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "8773d84c2cabc573",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.75, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 0.5, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/GlowOrange.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        }
+      }
+    },
+    {
+      "uuid": "8d866d039a24c170",
+      "name": "Lamp Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "8773d84c2cabc573",
+      "components": {
+        "Transform": {
+          "Position": [0, 4.69999981, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.600000024, 0.300000012],
+          "Intensity": 2.20000005,
+          "Range": 13,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "61ed9a72b92263f1",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "d8a68842655b80a2",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [-6, 0.600000024, 12],
+          "Rotation": [0, 0, 0],
+          "Scale": [4, 1.20000005, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "5c62eab9ab6cc59c",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [7, 0.600000024, 14],
+          "Rotation": [0, 0, 0],
+          "Scale": [4, 1.20000005, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "caef742de932f378",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [-8, 0.600000024, -13],
+          "Rotation": [0, 0, 0],
+          "Scale": [4, 1.20000005, 0.5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "5fde18a0738dba1f",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [6, 0.600000024, -12],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 1.20000005, 4]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "1ae55988c88ab381",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [-22, 0.600000024, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 1.20000005, 5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "e8daad2133bc703a",
+      "name": "Cover",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [22, 0.600000024, 2],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.5, 1.20000005, 5]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Trim.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "6e967d0af22c3b7b",
+      "name": "Step",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "61ed9a72b92263f1",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.25, 5.5999999],
+          "Rotation": [0, 0, 0],
+          "Scale": [3, 0.5, 2]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Metal.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "00f8bd8ef073e170",
+      "name": "Props",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "ca0d4998dd9e5679",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-14, 0, 4],
+          "Rotation": [0, 10, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "381f4c3908785d6f",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-14, 1, 4],
+          "Rotation": [0, 35, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        },
+        "Rigidbody": {
+          "Mass": 2,
+          "Drag": 0.200000003,
+          "Bounciness": 0.150000006,
+          "Use Gravity": true,
+          "Is Kinematic": false
+        }
+      }
+    },
+    {
+      "uuid": "119e93c041cc43ea",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-12.8000002, 0, 4.4000001],
+          "Rotation": [0, -8, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "b496c8a4db4f3ba9",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [14, 0, -4],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "c4c32e666a59e94c",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [15.1000004, 0, -4.19999981],
+          "Rotation": [0, 20, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        },
+        "Rigidbody": {
+          "Mass": 2,
+          "Drag": 0.200000003,
+          "Bounciness": 0.150000006,
+          "Use Gravity": true,
+          "Is Kinematic": false
+        }
+      }
+    },
+    {
+      "uuid": "185a55ca4dce306a",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [14.5, 1, -4.0999999],
+          "Rotation": [0, 45, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        },
+        "Rigidbody": {
+          "Mass": 2,
+          "Drag": 0.200000003,
+          "Bounciness": 0.150000006,
+          "Use Gravity": true,
+          "Is Kinematic": false
+        }
+      }
+    },
+    {
+      "uuid": "4634a2b26b9559db",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [4, 0, 20],
+          "Rotation": [0, 15, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        },
+        "Rigidbody": {
+          "Mass": 2,
+          "Drag": 0.200000003,
+          "Bounciness": 0.150000006,
+          "Use Gravity": true,
+          "Is Kinematic": false
+        }
+      }
+    },
+    {
+      "uuid": "f56a830911f5d142",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-3, 0, -22],
+          "Rotation": [0, -12, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "770aeea48debe216",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-3, 1, -22],
+          "Rotation": [0, 5, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        },
+        "Rigidbody": {
+          "Mass": 2,
+          "Drag": 0.200000003,
+          "Bounciness": 0.150000006,
+          "Use Gravity": true,
+          "Is Kinematic": false
+        }
+      }
+    },
+    {
+      "uuid": "285e535805dcd6e2",
+      "name": "Crate",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [24, 0, 22],
+          "Rotation": [0, 30, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/crate.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.5, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        },
+        "Rigidbody": {
+          "Mass": 2,
+          "Drag": 0.200000003,
+          "Bounciness": 0.150000006,
+          "Use Gravity": true,
+          "Is Kinematic": false
+        }
+      }
+    },
+    {
+      "uuid": "01819102fee0ea97",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-16, 0, 6],
+          "Rotation": [0, 0.951797962, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "0411c47ba4c67fe1",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-15.1999998, 0, 6.80000019],
+          "Rotation": [0, 237.712296, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "6bef12bf28c94e7a",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [16, 0, -6.5],
+          "Rotation": [0, 39.9445496, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "7a7993723e473f5e",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [9, 0, 20],
+          "Rotation": [0, 305.775665, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "64aeec7f8a46a01e",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-25, 0, -25],
+          "Rotation": [0, 315.158173, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "24db4948b40e50f0",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [25, 0, -25],
+          "Rotation": [0, 120.819931, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "fcf59afc5bb35953",
+      "name": "Barrel",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "00f8bd8ef073e170",
+      "components": {
+        "Transform": {
+          "Position": [-26, 0, 20],
+          "Rotation": [0, 311.259186, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/barrel.obj",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0.600000024, 0],
+          "Size": [0.800000012, 1.20000005, 0.800000012],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "87d9930d767ea61a",
+      "name": "Weapon Display",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "e905818c63de0fa8",
+      "components": {
+        "Transform": {
+          "Position": [-4, 0, 25],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "0be82b711700edd0",
+      "name": "Pedestal",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "87d9930d767ea61a",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.5, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/Dark.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [1, 1, 1],
+          "Is Trigger": false
+        }
+      }
+    },
+    {
+      "uuid": "16592fd2eed9292a",
+      "name": "Rifle Showcase",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "87d9930d767ea61a",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.45000005, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1.20000005, 1.20000005, 1.20000005]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/rifle.gltf",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Spinner": {
+          "Speed": [0, 45, 0],
+          "Bob Amplitude": 0.0500000007,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "e8cbfcaebcafe09f",
+      "name": "Display Light",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "87d9930d767ea61a",
+      "components": {
+        "Transform": {
+          "Position": [0, 2.5999999, 0.600000024],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.949999988, 0.850000024],
+          "Intensity": 1.5,
+          "Range": 5,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    },
+    {
+      "uuid": "6b5138126185e708",
+      "name": "Drone Showcase",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "87d9930d767ea61a",
+      "components": {
+        "Transform": {
+          "Position": [2.5, 1.60000002, 0],
+          "Rotation": [0, 200, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/drone.glb",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": true,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Spinner": {
+          "Speed": [0, -30, 0],
+          "Bob Amplitude": 0.119999997,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "a2f1218425216ef4",
+      "name": "Spawn Points",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "0000000000000000",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "fa21a6045cb01838",
+      "name": "Spawn 1",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "a2f1218425216ef4",
+      "components": {
+        "Transform": {
+          "Position": [-24, 3, -24],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Spawn Point": {
+          "Radius": 1.5
+        }
+      }
+    },
+    {
+      "uuid": "abe413c7cec79c21",
+      "name": "Spawn 2",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "a2f1218425216ef4",
+      "components": {
+        "Transform": {
+          "Position": [24, 3, -24],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Spawn Point": {
+          "Radius": 1.5
+        }
+      }
+    },
+    {
+      "uuid": "fcfab2bcdb247288",
+      "name": "Spawn 3",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "a2f1218425216ef4",
+      "components": {
+        "Transform": {
+          "Position": [0, 3.5, -26],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Spawn Point": {
+          "Radius": 1.5
+        }
+      }
+    },
+    {
+      "uuid": "d7632e881c1abfdf",
+      "name": "Spawn 4",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "a2f1218425216ef4",
+      "components": {
+        "Transform": {
+          "Position": [-26, 3, -2],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Spawn Point": {
+          "Radius": 1.5
+        }
+      }
+    },
+    {
+      "uuid": "2e9f90191b0dc112",
+      "name": "Spawn 5",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "a2f1218425216ef4",
+      "components": {
+        "Transform": {
+          "Position": [26, 3, -2],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Spawn Point": {
+          "Radius": 1.5
+        }
+      }
+    },
+    {
+      "uuid": "5ae89379aed1c808",
+      "name": "Spawn 6",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "a2f1218425216ef4",
+      "components": {
+        "Transform": {
+          "Position": [0, 8, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Spawn Point": {
+          "Radius": 1.5
+        }
+      }
+    },
+    {
+      "uuid": "b925ee71a7497d5d",
+      "name": "Pickups",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "0000000000000000",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        }
+      }
+    },
+    {
+      "uuid": "e3bdbd43e981e3f7",
+      "name": "Health Pack",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "b925ee71a7497d5d",
+      "components": {
+        "Transform": {
+          "Position": [-20, 0.800000012, 10],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.449999988, 0.449999988, 0.449999988]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Sphere",
+          "Material": "materials/HealthPickup.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [0.300000012, 1, 0.400000006],
+          "Intensity": 1.5,
+          "Range": 4,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Pickup": {
+          "Type": "Health",
+          "Amount": 35,
+          "Respawn Time": 15
+        },
+        "Spinner": {
+          "Speed": [0, 120, 0],
+          "Bob Amplitude": 0.150000006,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "b44287a556d4413f",
+      "name": "Health Pack",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "b925ee71a7497d5d",
+      "components": {
+        "Transform": {
+          "Position": [20, 0.800000012, -10],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.449999988, 0.449999988, 0.449999988]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Sphere",
+          "Material": "materials/HealthPickup.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [0.300000012, 1, 0.400000006],
+          "Intensity": 1.5,
+          "Range": 4,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Pickup": {
+          "Type": "Health",
+          "Amount": 35,
+          "Respawn Time": 15
+        },
+        "Spinner": {
+          "Speed": [0, 120, 0],
+          "Bob Amplitude": 0.150000006,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "6c11dccc008cf229",
+      "name": "Ammo Box",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "b925ee71a7497d5d",
+      "components": {
+        "Transform": {
+          "Position": [20, 0.800000012, 10],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.449999988, 0.449999988, 0.449999988]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/AmmoPickup.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.800000012, 0.300000012],
+          "Intensity": 1.5,
+          "Range": 4,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Pickup": {
+          "Type": "Ammo",
+          "Amount": 60,
+          "Respawn Time": 15
+        },
+        "Spinner": {
+          "Speed": [0, 120, 0],
+          "Bob Amplitude": 0.150000006,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "cd94b9bb73b4036e",
+      "name": "Ammo Box",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "b925ee71a7497d5d",
+      "components": {
+        "Transform": {
+          "Position": [-20, 0.800000012, -10],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.449999988, 0.449999988, 0.449999988]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Cube",
+          "Material": "materials/AmmoPickup.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.800000012, 0.300000012],
+          "Intensity": 1.5,
+          "Range": 4,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Pickup": {
+          "Type": "Ammo",
+          "Amount": 60,
+          "Respawn Time": 15
+        },
+        "Spinner": {
+          "Speed": [0, 120, 0],
+          "Bob Amplitude": 0.150000006,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "96c62701ed015308",
+      "name": "Health Pack",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "b925ee71a7497d5d",
+      "components": {
+        "Transform": {
+          "Position": [0, 1.79999995, 3.4000001],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.449999988, 0.449999988, 0.449999988]
+        },
+        "Mesh Renderer": {
+          "Mesh": "builtin:Sphere",
+          "Material": "materials/HealthPickup.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "World"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [0.300000012, 1, 0.400000006],
+          "Intensity": 1.5,
+          "Range": 4,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        },
+        "Pickup": {
+          "Type": "Health",
+          "Amount": 35,
+          "Respawn Time": 15
+        },
+        "Spinner": {
+          "Speed": [0, 120, 0],
+          "Bob Amplitude": 0.150000006,
+          "Bob Frequency": 2
+        }
+      }
+    },
+    {
+      "uuid": "c849e3a00bcda908",
+      "name": "Game Manager",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "0000000000000000",
+      "components": {
+        "Transform": {
+          "Position": [0, 0, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Game Manager": {
+          "Time Between Waves": 4,
+          "Base Enemies": 3,
+          "Enemies Per Wave": 2,
+          "Max Alive": 10
+        }
+      }
+    },
+    {
+      "uuid": "d01dc515156a4122",
+      "name": "Player",
+      "tag": "Player",
+      "active": true,
+      "parent": "0000000000000000",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.949999988, 22],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Box Collider": {
+          "Center": [0, 0, 0],
+          "Size": [0.699999988, 1.79999995, 0.699999988],
+          "Is Trigger": false
+        },
+        "Character Controller": {
+          "Height": 1.79999995,
+          "Radius": 0.349999994
+        },
+        "Player": {
+          "Move Speed": 6,
+          "Sprint Multiplier": 1.60000002,
+          "Jump Speed": 7.5,
+          "Mouse Sensitivity": 0.119999997,
+          "Eye Height": 0.699999988,
+          "Camera": "01fe77563ebe2d7a",
+          "Weapon": "3b301b52333822fc"
+        },
+        "Health": {
+          "Current": 100,
+          "Max": 100
+        }
+      }
+    },
+    {
+      "uuid": "01fe77563ebe2d7a",
+      "name": "Main Camera",
+      "tag": "MainCamera",
+      "active": true,
+      "parent": "d01dc515156a4122",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.699999988, 0],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Camera": {
+          "Field Of View": 70,
+          "Near Clip": 0.0299999993,
+          "Far Clip": 400,
+          "Primary": true,
+          "Clear Flags": "Skybox",
+          "Background": [0.189999998, 0.300000012, 0.469999999]
+        }
+      }
+    },
+    {
+      "uuid": "3b301b52333822fc",
+      "name": "Rifle",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "01fe77563ebe2d7a",
+      "components": {
+        "Transform": {
+          "Position": [0.159999996, -0.150000006, -0.5],
+          "Rotation": [0, 0, 0],
+          "Scale": [0.620000005, 0.620000005, 0.620000005]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/rifle.gltf",
+          "Material": "",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": true,
+          "Layer": "Viewmodel"
+        },
+        "Weapon": {
+          "Damage": 22,
+          "Fire Rate": 9,
+          "Range": 200,
+          "Spread": 0.600000024,
+          "Recoil": 0.899999976,
+          "Magazine Size": 30,
+          "Ammo": 30,
+          "Reserve Ammo": 150,
+          "Reload Time": 1.5,
+          "Impact Force": 7,
+          "Muzzle Flash": "affbabbb43b5a7e3",
+          "Rest Position": [0.159999996, -0.150000006, -0.5]
+        }
+      }
+    },
+    {
+      "uuid": "affbabbb43b5a7e3",
+      "name": "Muzzle Flash",
+      "tag": "Untagged",
+      "active": true,
+      "parent": "3b301b52333822fc",
+      "components": {
+        "Transform": {
+          "Position": [0, 0.0450000018, -0.800000012],
+          "Rotation": [0, 0, 0],
+          "Scale": [1, 1, 1]
+        },
+        "Mesh Renderer": {
+          "Mesh": "models/muzzleflash.obj",
+          "Material": "materials/MuzzleFlash.mat",
+          "Tint": [1, 1, 1, 1],
+          "Cast Shadows": false,
+          "Visible": false,
+          "Layer": "Viewmodel"
+        },
+        "Light": {
+          "Type": "Point",
+          "Color": [1, 0.75, 0.400000006],
+          "Intensity": 0,
+          "Range": 7,
+          "Spot Angle": 45,
+          "Cast Shadows": true
+        }
+      }
+    }
+  ]
+}

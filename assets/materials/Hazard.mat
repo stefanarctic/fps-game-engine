@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "Albedo Map": "textures/hazard.png",
+  "Metallic": 0.0,
+  "Roughness": 0.6,
+  "Emission": [
+    0,
+    0,
+    0
+  ],
+  "Tiling": [
+    0.5,
+    0.5
+  ],
+  "World Space UV": true,
+  "Name": "Hazard"
+}

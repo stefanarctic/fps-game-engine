@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.2,
+    0.8,
+    1.0,
+    1
+  ],
+  "Albedo Map": "",
+  "Metallic": 0.0,
+  "Roughness": 0.6,
+  "Emission": [
+    0.6,
+    2.4,
+    3.2
+  ],
+  "Tiling": [
+    1,
+    1
+  ],
+  "World Space UV": false,
+  "Name": "GlowCyan"
+}

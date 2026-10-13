@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.95,
+    0.75,
+    0.2,
+    1
+  ],
+  "Albedo Map": "",
+  "Metallic": 0.5,
+  "Roughness": 0.35,
+  "Emission": [
+    1.6,
+    1.1,
+    0.2
+  ],
+  "Tiling": [
+    1,
+    1
+  ],
+  "World Space UV": false,
+  "Name": "AmmoPickup"
+}

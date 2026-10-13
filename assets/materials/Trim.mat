@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.95,
+    0.45,
+    0.1,
+    1
+  ],
+  "Albedo Map": "",
+  "Metallic": 0.1,
+  "Roughness": 0.5,
+  "Emission": [
+    0,
+    0,
+    0
+  ],
+  "Tiling": [
+    1,
+    1
+  ],
+  "World Space UV": false,
+  "Name": "Trim"
+}

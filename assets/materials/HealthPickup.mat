@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.25,
+    0.95,
+    0.35,
+    1
+  ],
+  "Albedo Map": "",
+  "Metallic": 0.0,
+  "Roughness": 0.3,
+  "Emission": [
+    0.3,
+    2.0,
+    0.5
+  ],
+  "Tiling": [
+    1,
+    1
+  ],
+  "World Space UV": false,
+  "Name": "HealthPickup"
+}

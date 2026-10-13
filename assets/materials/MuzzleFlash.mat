@@ -1,0 +1,23 @@
+{
+  "Shader": "Unlit",
+  "Albedo": [
+    1.0,
+    0.85,
+    0.5,
+    1
+  ],
+  "Albedo Map": "",
+  "Metallic": 0.0,
+  "Roughness": 0.6,
+  "Emission": [
+    8.0,
+    5.0,
+    1.8
+  ],
+  "Tiling": [
+    1,
+    1
+  ],
+  "World Space UV": false,
+  "Name": "MuzzleFlash"
+}

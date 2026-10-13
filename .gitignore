@@ -1,0 +1,15 @@
+# Build output
+build/
+out/
+*.exe
+*.pdb
+*.ilk
+
+# IDE / editor state
+.vs/
+.vscode/
+*.user
+ForgeEditor.ini
+
+# Local Claude Code settings
+.claude/settings.local.json

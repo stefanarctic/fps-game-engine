@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.85,
+    0.85,
+    0.85,
+    1
+  ],
+  "Albedo Map": "textures/grid.png",
+  "Metallic": 0.0,
+  "Roughness": 0.75,
+  "Emission": [
+    0,
+    0,
+    0
+  ],
+  "Tiling": [
+    0.25,
+    0.25
+  ],
+  "World Space UV": true,
+  "Name": "Floor"
+}

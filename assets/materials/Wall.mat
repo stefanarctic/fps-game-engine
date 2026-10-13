@@ -1,0 +1,23 @@
+{
+  "Shader": "Lit",
+  "Albedo": [
+    0.78,
+    0.78,
+    0.8,
+    1
+  ],
+  "Albedo Map": "textures/concrete.png",
+  "Metallic": 0.0,
+  "Roughness": 0.9,
+  "Emission": [
+    0,
+    0,
+    0
+  ],
+  "Tiling": [
+    0.2,
+    0.2
+  ],
+  "World Space UV": true,
+  "Name": "Wall"
+}
